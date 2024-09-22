@@ -1,0 +1,16 @@
+{
+  "name": "poker-engine",
+  "version": "0.0.1",
+  "description": "A Poker engine made with Typescript",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "typescript": "^5.6.2"
+  }
+}
