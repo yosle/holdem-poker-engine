@@ -1,4 +1,4 @@
-import { Card } from './card';
+import { Card, cardToEmojiString} from './card';
 
 export const PlayerAction = {
     Fold: 'Fold',
@@ -10,10 +10,9 @@ export const PlayerAction = {
 
 export type PlayerAction = typeof PlayerAction[keyof typeof PlayerAction];
 
-
 export class Player {
 
-    constructor(id: string, name: string, chips: number, hand: Card[], isFolded: boolean, betAmount: number = 0) {
+    constructor(id: string, name: string, chips: number, hand: Card[], isFolded: boolean = false, betAmount: number = 0) {
         this.id = id;
         this.name = name;
         this.chips = chips;
@@ -47,5 +46,10 @@ export class Player {
 
     setBetAmount(amount: number){
         this.betAmount = amount
+    }   
+  
+
+    getHandEmojiString(): string[] {
+        return this.hand.map(card => cardToEmojiString(card));
     }
 }

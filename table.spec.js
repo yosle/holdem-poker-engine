@@ -1,5 +1,5 @@
 const { Table } = require('./dist/table')
-const { Rank, Suit } = require('./dist/card')
+// const { Rank, Suit } = require('./dist/card')
 const { PlayerAction } = require('./dist/player')
 const { Player } = require("./dist/player")
 
@@ -19,12 +19,11 @@ table.playerAction(2, PlayerAction.Bet, 10);
 table.playerAction(3, PlayerAction.Bet, 20);
 table.playerAction(1, PlayerAction.Call);
 table.playerAction(2, PlayerAction.Fold)
-table.playerAction(3, PlayerAction.Check)
-table.playerAction(1, PlayerAction.Check)
-table.playerAction(3, PlayerAction.Check)
+table.playerAction(3, PlayerAction.Fold)
+// table.playerAction(1, PlayerAction.Fold)
+// table.playerAction(3, PlayerAction.Check)
+// table.playerAction(1, PlayerAction.Check)
+// table.playerAction(3, PlayerAction.Check)
 
-// table.playerAction(2, PlayerAction.Check)
 delete table.deck
-console.log("Players despues de startGame", table);
-
-// console.log(table, JSON.stringify(table.players));
+console.log(table, JSON.stringify(table));
