@@ -257,6 +257,10 @@ export class Table {
     switch (action) {
       case PlayerAction.Fold:
         player.isFolded = true;
+        const activePlayers = this.players.filter((p) => !p.isFolded);
+        if (activePlayers.length === 1) {
+          this.gameState = GameState.Showdown;
+        }
         // pasar el turno al proximo jugador
         break;
       case PlayerAction.Call:

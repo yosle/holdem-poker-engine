@@ -14,16 +14,15 @@ table.seatPlayer({
     chips: 100
 })
 table.startGame()
-console.log("Players antes de startGame", table.gameState);
 table.playerAction(2, PlayerAction.Bet, 10);
 table.playerAction(3, PlayerAction.Bet, 20);
 table.playerAction(1, PlayerAction.Call);
-table.playerAction(2, PlayerAction.Fold)
+table.playerAction(2, PlayerAction.Call)
 table.playerAction(3, PlayerAction.Fold)
-// table.playerAction(1, PlayerAction.Fold)
-// table.playerAction(3, PlayerAction.Check)
+table.playerAction(1, PlayerAction.Call)
+table.playerAction(2, PlayerAction.Fold)
+console.log("Players antes de startGame", table.gameState);
+
 // table.playerAction(1, PlayerAction.Check)
 // table.playerAction(3, PlayerAction.Check)
 
-delete table.deck
-console.log(table, JSON.stringify(table));

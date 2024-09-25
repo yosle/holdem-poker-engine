@@ -1,55 +1,60 @@
-import { Card, cardToEmojiString} from './card';
+import { Card, cardToEmojiString } from "./card";
 
 export const PlayerAction = {
-    Fold: 'Fold',
-    Call: 'Call',
-    Raise: 'Raise',
-    Check: 'Check',
-    Bet: 'Bet'
+  Fold: "Fold",
+  Call: "Call",
+  Raise: "Raise",
+  Check: "Check",
+  Bet: "Bet",
 } as const;
 
-export type PlayerAction = typeof PlayerAction[keyof typeof PlayerAction];
+export type PlayerAction = (typeof PlayerAction)[keyof typeof PlayerAction];
 
 export class Player {
+  constructor(
+    id: string,
+    name: string,
+    chips: number,
+    hand: Card[] = [],
+    isFolded: boolean = false,
+    betAmount: number = 0
+  ) {
+    this.id = id;
+    this.name = name;
+    this.chips = chips;
+    this.hand = hand;
+    this.isFolded = isFolded;
+    this.betAmount = betAmount;
+  }
+  readonly id: string = "";
+  name = "";
+  chips = 0;
+  hand: Card[] = [];
+  isFolded: boolean = false;
+  betAmount: number = 0;
+  seatNumber: number = -1;
 
-    constructor(id: string, name: string, chips: number, hand: Card[], isFolded: boolean = false, betAmount: number = 0) {
-        this.id = id;
-        this.name = name;
-        this.chips = chips;
-        this.hand = hand;
-        this.isFolded = isFolded;
-        this.betAmount = betAmount;
-    }
-    readonly id: string = "";
-    name= "";
-    chips = 0;
-    hand: Card[] = [];
-    isFolded: boolean = false;
-    betAmount: number = 0;
-    seatNumber: number = -1;
+  updateChips(amount: number) {
+    this.chips += amount;
+  }
 
-    updateChips(amount: number) {
-        this.chips += amount;
-    }
+  addCard(card: Card) {
+    this.hand.push(card);
+  }
 
-    addCard(card: Card) {
-        this.hand.push(card);
-    }
+  /**
+   * set seat number
+   * @param seatNumber {number}
+   */
+  setSeat(seatNumber: number) {
+    this.seatNumber = seatNumber;
+  }
 
-    /**
-     * set seat number
-     * @param seatNumber {number}
-     */
-    setSeat(seatNumber: number){
-        this.seatNumber = seatNumber
-    }
+  setBetAmount(amount: number) {
+    this.betAmount = amount;
+  }
 
-    setBetAmount(amount: number){
-        this.betAmount = amount
-    }   
-  
-
-    getHandEmojiString(): string[] {
-        return this.hand.map(card => cardToEmojiString(card));
-    }
+  getHandEmojiString(): string[] {
+    return this.hand.map((card) => cardToEmojiString(card));
+  }
 }
