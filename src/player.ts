@@ -1,4 +1,4 @@
-import { Card, cardToEmojiString } from "./card";
+import { Card, cardToEmojiString } from "./Card";
 
 export const PlayerAction = {
   Fold: "Fold",

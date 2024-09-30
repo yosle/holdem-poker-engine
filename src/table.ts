@@ -4,8 +4,9 @@ import {
   CardRank,
   cardToString,
   cardToEmojiString,
-} from "./card";
-import { Player, PlayerAction } from "./player";
+} from "./Card";
+import { GameLogEntry, HandHistory } from "./GameLogEntry";
+import { Player, PlayerAction } from "./Player";
 import { evalHand } from "poker-evaluator-ts";
 
 export enum GameState {
@@ -32,6 +33,7 @@ export class Table {
   private currentBet: number = 0; // Apuesta actual en la ronda
   private smallBlind: number = 5;
   private bigBlind: number = 10;
+  history: HandHistory[] = [];
   constructor(private maxPlayers: number = 10) {
     this.initializeDeck();
   }
@@ -50,7 +52,11 @@ export class Table {
     this.shuffleDeck();
   }
 
-  // Baraja el mazo
+  /**
+   * Shuffles the deck of cards using the Fisher-Yates shuffle algorithm
+   * @see https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+   * @returns {void}
+   */
   private shuffleDeck(): void {
     for (let i = this.deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -225,20 +231,7 @@ export class Table {
       this.nextPlayer();
       return;
     }
-    // Aquí debería implementar la lógica de temporizadores y esperar la entrada del jugador
-    // Para este ejemplo, simularemos la acción del jugador
-    // this.simulatePlayerAction(player);
   }
-
-  // Simula una acción de jugador para simplificar (en un juego real, esto se reemplazaría por la entrada real del jugador)
-  // simulatePlayerAction(player: Player): void {
-  //     // Lógica simple de simulación
-  //     if (player.chips >= this.minimumBet) {
-  //         this.playerAction(player.id, PlayerAction.Call); // Llamada simple a la apuesta mínima
-  //     } else {
-  //         this.playerAction(player.id, PlayerAction.Fold);
-  //     }
-  // }
 
   // Acción del jugador (modificada para la ronda de apuestas)
   playerAction(playerId: string, action: PlayerAction, amount?: number): void {
@@ -386,5 +379,9 @@ export class Table {
     });
     this.initializeDeck();
     this.gameState = GameState.PreFlop;
+  }
+
+  getHandHistory(): HandHistory[] {
+    return this.history;
   }
 }

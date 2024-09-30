@@ -1,3 +1,3 @@
-export * from './card';
-export * from './player';
-export * from './table';
+export * from "./Card";
+export * from "./Player";
+export * from "./Table";
