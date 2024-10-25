@@ -39,7 +39,7 @@ export const CardRank = {
 export type Rank = (typeof CardRank)[keyof typeof CardRank];
 export type Suit = (typeof CardSuit)[keyof typeof CardSuit];
 
-export interface Card {
+export default interface Card {
   suit: Suit;
   rank: Rank;
 }

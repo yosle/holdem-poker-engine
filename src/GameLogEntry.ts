@@ -1,4 +1,4 @@
-import { Card } from "./Card";
+import Card from "./Card";
 import { PlayerAction } from "./Player";
 
 // Actions and Game States
@@ -15,7 +15,7 @@ export interface PlayerActionRecord {
 }
 
 export interface GameStateChange {
-  newState: "pre-flop" | "flop" | "turn" | "river" | "showdown";
+  newState: "pre-flop" | "flop" | "turn" | "river" | "showdown" | "ended";
 }
 
 export interface PotUpdate {
@@ -32,7 +32,7 @@ export interface GameLogEntry {
   type: LogEntryType;
   timestamp: Date;
   details: PlayerActionRecord | GameStateChange | PotUpdate | RoundEnd;
-  players: { [playerId: string]: PlayerState };
+  players: PlayerState[];
   communityCards: Card[];
 }
 
@@ -41,17 +41,12 @@ export interface PlayerState {
   playerId: string;
   chips: number;
   cards: Card[];
-  hand: Card[];
   isFolded: boolean;
   betAmount: number;
-}
-
-export interface HandHistory {
-  gameLog: GameLogEntry[];
 }
 
 // For tracking multiple hands
 export interface GameHistory {
   tableId: string;
-  hands: HandHistory[];
+  hands: GameLogEntry[];
 }

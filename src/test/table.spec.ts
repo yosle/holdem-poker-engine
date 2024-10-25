@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Player, PlayerAction } from "../Player";
-import { Card } from "../Card";
-import { Table } from "../Table";
+import Card from "../Card";
+import Table from "../Table";
 
 describe("Table test suite", () => {
   it("should declare winner if everyone folds", () => {

@@ -1,4 +1,4 @@
-import { Card, cardToEmojiString } from "./Card";
+import Card, { cardToEmojiString } from "./Card";
 
 export const PlayerAction = {
   Fold: "Fold",
@@ -6,6 +6,8 @@ export const PlayerAction = {
   Raise: "Raise",
   Check: "Check",
   Bet: "Bet",
+  Show: "Show",
+  Hide: "Hide",
 } as const;
 
 export type PlayerAction = (typeof PlayerAction)[keyof typeof PlayerAction];

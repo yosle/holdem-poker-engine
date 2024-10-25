@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Player, PlayerAction } from "../Player";
-import { Card } from "../Card";
+import Card from "../Card";
 
 describe("Player class Test suite", () => {
   it("should create a new player with default values", () => {
