@@ -5,7 +5,7 @@ import Card, {
   cardToEmojiString,
 } from "./Card";
 import { GameLogEntry } from "./GameLogEntry";
-import { Player, PlayerAction } from "./Player";
+import Player, { PlayerAction } from "./Player";
 import { evalHand } from "poker-evaluator-ts";
 import PokerEngineEvents from "./PokerEngineEvents";
 import PlayerTurnTimeout from "./PlayerTurnTimeOut";
@@ -21,23 +21,38 @@ export enum GameState {
   Ended,
 }
 
+export const GAME_EVENTS = {
+  PLAYER_TURN: "PLAYER_TURN",
+  PLAYER_ACTION: "PLATER_ACTION",
+  PLAYER_TURN_EXPIRED: "PLAYER_TURN_EXPIRED",
+  GAME_STATE_CHANGED: "GAME_STATE_CHANGED",
+  GAME_STARTED: "GAME_STARTED",
+  GAME_ENDED: "GAME_ENDED",
+  PLAYER_JOINED: "PLAYER_JOINED",
+  PLAYER_LEFT: "PLAYER_LEFT",
+  GAME_ACTION_PERFORMED: "GAME_ACTION_PERFORMED",
+  GAME_ACTION_COMPLETED: "GAME_ACTION_COMPLETED",
+  GAME_ACTION_CANCELLED: "GAME_ACTION_CANCELLED",
+  SHOWDOWN: "SHOWDOWN",
+};
+
 export default class Table {
   public events: PokerEngineEvents;
   private deck: Card[] = [];
-  private players: Player[] = [];
-  private pot: number = 0;
+  public players: Player[] = [];
+  public pot: number = 0;
   gameState: GameState = GameState.WaitingForPlayers;
-  private communityCards: Card[] = [];
+  public communityCards: Card[] = [];
   private currentPlayerIndex: number = 0;
   private currentDealerIndex: number = 0;
   private currentBigBlindIndex: number = 0;
   private currentSmallBlindIndex: number = 1;
-  private minimumBet: number = 5; // Apuesta mínima para cada ronda
-  private currentBet: number = 0; // Apuesta actual en la ronda
-  private smallBlind: number = 5;
-  private bigBlind: number = 10;
+  public minimumBet: number = 5; // Apuesta mínima para cada ronda
+  public currentBet: number = 0; // Apuesta actual en la ronda
+  public smallBlind: number = 5;
+  public bigBlind: number = 10;
   public playerTurnTimeLimit = 5;
-  history: GameLogEntry[] = [];
+  public history: GameLogEntry[] = [];
   public playerTurnTimeout: any;
 
   constructor(
@@ -58,7 +73,7 @@ export default class Table {
   }
 
   // Inicializa el mazo con 52 cartas
-  private initializeDeck(): void {
+  public initializeDeck(): void {
     this.deck = [];
     for (let suit in CardSuit) {
       for (let rank in CardRank) {
@@ -91,7 +106,7 @@ export default class Table {
    */
   seatPlayer(player: Player, seatNumber?: number): boolean {
     if (this.players.length >= this.maxPlayers) {
-      throw new Error("Todos los asientos del juego estan ocupados");
+      throw new Error("No more players allowed for this game");
     }
     const isSeatTaken = this.players.some((p) => p.seatNumber === seatNumber);
     if (isSeatTaken) {
@@ -123,22 +138,49 @@ export default class Table {
     // hand's up game: is Dealer/small blind turn. else is small blind turn
     this.currentPlayerIndex = this.currentSmallBlindIndex;
     // Once game start is 1st player turn
-    this.events.emit("PlayerTurn", {
+    this.events.emit(GAME_EVENTS.PLAYER_TURN, {
       playerId: this.players[this.currentPlayerIndex].id,
     });
 
-    this.events.on("PlayerTurnExpired", (data) => {
+    this.events.on(GAME_EVENTS.PLAYER_TURN_EXPIRED, (data) => {
       if (this.gameState === GameState.Ended) return;
       let autoPlay: PlayerAction = PlayerAction.Check;
       if (this.gameState === GameState.Showdown) {
         autoPlay = PlayerAction.Hide; // later implement this
       }
       const player = this.players[this.currentPlayerIndex];
+
+      // first turn of small blind on pre-flop, default action is bet the minimun bet
+      if (
+        this.gameState === GameState.PreFlop &&
+        player.betAmount === 0 &&
+        player.id === this.players[this.currentSmallBlindIndex].id
+      ) {
+        console.log(
+          `Time is up for player ${player.name} turn! Automatic play for player is ${autoPlay} game state: ${this.gameState}`
+        );
+        this.playerAction(player.id, PlayerAction.Bet, this.minimumBet);
+        return;
+      }
+
+      // If is first turn of big blind and times up for player automatic play is double of smallBlind
+      if (
+        this.gameState === GameState.PreFlop &&
+        player.betAmount === 0 &&
+        player.id === this.players[this.currentBigBlindIndex].id
+      ) {
+        console.log(
+          `Time is up for player ${player.name} turn! Automatic play for player is ${autoPlay} game state: ${this.gameState}`
+        );
+        this.playerAction(player.id, PlayerAction.Bet, this.minimumBet * 2);
+        return;
+      }
+
       if (player.betAmount < this.currentBet) {
         autoPlay = PlayerAction.Fold;
       }
       console.log(
-        `Time is up! Automatic play for player is ${autoPlay} game state: ${this.gameState}`
+        `Time is up for player ${player.name} turn! Automatic play for player is ${autoPlay} game state: ${this.gameState}`
       );
       this.playerAction(player.id, autoPlay);
     });
@@ -155,6 +197,7 @@ export default class Table {
   proceedToNextRound(): void {
     switch (this.gameState) {
       case GameState.PreFlop:
+        console.debug(`Starting Flop. current bet: ${this.currentBet}`);
         this.gameState = GameState.Flop;
         this.dealCommunityCards(3);
         this.history.push({
@@ -176,6 +219,7 @@ export default class Table {
         });
         break;
       case GameState.Flop:
+        console.debug(`Starting Turn. current bet: ${this.currentBet}`);
         this.gameState = GameState.Turn;
         this.dealCommunityCards(1);
         this.history.push({
@@ -197,6 +241,7 @@ export default class Table {
         });
         break;
       case GameState.Turn:
+        console.debug(`Starting River. current bet: ${this.currentBet}`);
         this.gameState = GameState.River;
         this.dealCommunityCards(1);
         this.history.push({
@@ -218,8 +263,13 @@ export default class Table {
         });
         break;
       case GameState.River:
+        console.debug(`Starting Showdown. current bet: ${this.currentBet}`);
         this.gameState = GameState.Showdown;
-
+        this.events.emit(GAME_EVENTS.GAME_STATE_CHANGED, {
+          details: {
+            newState: GameState.Showdown,
+          },
+        });
         this.history.push({
           timestamp: new Date(),
           type: "GameStateChange",
@@ -239,9 +289,9 @@ export default class Table {
         });
         break;
       case GameState.Showdown:
+        console.debug(`Game Ended`);
         this.determineWinners();
         this.gameState = GameState.Ended;
-
         this.history.push({
           timestamp: new Date(),
           type: "GameStateChange",
@@ -276,12 +326,9 @@ export default class Table {
     }
   }
 
-  // Determina los ganadores de la mano actual
   private determineWinners(): Player[] {
     console.log("Determining winners");
     let winners: Player[] = [];
-    // Evaluar la mano de cada jugador y determinar el/los ganador(es)
-    // Simplificado para este ejemplo; se requiere lógica real de evaluación de manos de póker
     const activePlayers = this.players.filter((player) => !player.isFolded);
 
     const communityCards = this.communityCards.map((card) =>
@@ -340,31 +387,46 @@ export default class Table {
     );
 
     this.pot = 0;
+    this.events.emit(GAME_EVENTS.GAME_ENDED, {
+      winners,
+      // add more info like the hand name
+    });
     return winners;
   }
 
   // Inicia una ronda de apuestas
   startBettingRound(): void {
-    this.minimumBet = this.getBigBlind(); // Supongamos que hay ciegas en el juego
+    this.minimumBet = this.getBigBlind();
     this.currentBet = 0;
     this.players.forEach((player) => (player.betAmount = 0));
     this.currentPlayerIndex = this.getNextPlayerIndex(this.currentPlayerIndex);
     this.processPlayerAction();
   }
 
-  // Procesa la acción de un jugador (el flujo de apuestas)
   processPlayerAction(): void {
     const player = this.players[this.currentPlayerIndex];
     if (player.isFolded || player.chips === 0) {
       this.nextPlayer();
       return;
     }
-    this.events.emit("PlayerTurn", {
+    this.events.emit(GAME_EVENTS.PLAYER_TURN, {
       playerId: this.players[this.currentPlayerIndex].id,
     });
   }
 
-  // Acción del jugador (modificada para la ronda de apuestas)
+  /**
+   * Process a player action.
+   * @param {string} playerId the id of the player performing the action
+   * @param {PlayerAction} action the action to perform
+   * @param {number?} amount the amount to bet or raise
+   * @throws {Error} if the player is not found
+   * @throws {Error} if the player is not in turn
+   * @throws {Error} if the amount is not specified for Bet or Raise actions
+   * @throws {Error} if the player is trying to bet or raise with not enough chips
+   * @throws {Error} if the player is trying to bet or raise with an invalid amount
+   * @throws {Error} if the player is trying to show cards in a state that is not Showdown
+   * @throws {Error} if the player is trying to hide cards in a state that is not Showdown
+   */
   playerAction(playerId: string, action: PlayerAction, amount?: number): void {
     const player = this.players.find((p) => p.id === playerId);
     if (!player) {
@@ -379,10 +441,10 @@ export default class Table {
     }
 
     this.events.on(
-      "PlayerAction",
-      (data: { playerId: string; action: PlayerAction }) => {
+      GAME_EVENTS.PLAYER_ACTION,
+      (data: { playerId: string; action: PlayerAction; amount?: number }) => {
         clearTimeout(this.playerTurnTimeout); // Si el jugador actúa, cancelar el timeout
-        console.log(`El jugador ${playerId} hizo una acción: ${data.action}`);
+        console.log(`The player ${playerId} make: ${data.action}`);
 
         // Update history
         this.history.push({
@@ -392,6 +454,7 @@ export default class Table {
           details: {
             action: data.action,
             playerId: data.playerId,
+            amount: data?.amount,
           },
           players: this.players.map((p) => {
             return {
@@ -409,46 +472,51 @@ export default class Table {
     switch (action) {
       case PlayerAction.Fold:
         player.isFolded = true;
-        const activePlayers = this.players.filter((p) => !p.isFolded);
-        if (activePlayers.length === 1) {
-          this.gameState = GameState.Showdown;
-        }
         // pasar el turno al proximo jugador
+        console.debug(`Player ${player.name} Folded. Bet: ${player.betAmount}`);
+        this.events.emit(GAME_EVENTS.PLAYER_ACTION, { playerId, action });
 
         break;
       case PlayerAction.Call:
         const callAmount = this.currentBet - player.betAmount;
         if (player.chips < callAmount)
-          throw new Error("No hay saldo suficiente para igualar");
+          throw new Error(
+            `Player has no enough chips (${player.chips} to Call ${callAmount} and match ${this.currentBet})`
+          );
         player.chips -= callAmount;
         player.betAmount = this.currentBet;
         this.pot += callAmount;
-        this.events.emit("PlayerAction", { playerId, action });
-        // Create log entry
-
+        this.events.emit(GAME_EVENTS.PLAYER_ACTION, { playerId, action });
         break;
       case PlayerAction.Raise:
         if (amount !== undefined) {
           const raiseAmount = amount - player.betAmount;
           if (player.chips < raiseAmount)
-            throw new Error("No hay fichas suficientes para Raise");
+            throw new Error(
+              `No enough chips (${player.chips}) to raise ${raiseAmount}`
+            );
           player.chips -= raiseAmount;
           player.betAmount += raiseAmount;
           this.pot += raiseAmount;
           this.currentBet = this.currentBet + raiseAmount; // Actualiza la apuesta actual
+          console.debug(
+            `Player ${player.name} raised ${raiseAmount} to ${player.betAmount}.  Pot: ${this.pot}`
+          );
         } else {
-          throw new Error("Se debe especificar el monto para Raise");
+          throw new Error("Must specify amount to Raise");
         }
-        this.events.emit("PlayerAction", { playerId, action });
+        this.events.emit(GAME_EVENTS.PLAYER_ACTION, { playerId, action });
         break;
       case PlayerAction.Bet:
         if (this.gameState != GameState.PreFlop) {
-          throw new Error("bet action only allowed in PreFlop");
+          throw new Error("Bet action only allowed in PreFlop");
         }
         if (amount === undefined)
-          throw new Error("Debe especificar un monto para accion Bet");
+          throw new Error("Amount must be specified for Bet action");
         if (amount < this.minimumBet) {
-          throw new Error(`El monto minimo es ${this.minimumBet}`);
+          throw new Error(
+            `This min amount for this hand is ${this.minimumBet}`
+          );
         }
 
         if (
@@ -482,14 +550,37 @@ export default class Table {
         player.betAmount = amount;
         this.pot += amount;
         this.currentBet = amount;
-        this.events.emit("PlayerAction", { playerId, action, amount });
+        console.debug(`Player ${player.name} Bet ${amount}. Pot: ${this.pot}`);
+        this.events.emit(GAME_EVENTS.PLAYER_ACTION, {
+          playerId,
+          action,
+          amount,
+        });
         break;
       case PlayerAction.Check:
-        // El jugador pasa sin
-        this.events.emit("PlayerAction", { playerId, action });
+        console.debug(`Player ${player.name} Checked. Pot ${this.pot}`);
+        this.events.emit(GAME_EVENTS.PLAYER_ACTION, { playerId, action });
+        break;
+      case PlayerAction.Hide:
+        if (this.gameState != GameState.Showdown)
+          throw "Cant show cards only in showdown";
+        player.showCards = false;
+        break;
+      case PlayerAction.Show:
+        if (this.gameState != GameState.Showdown)
+          throw new Error("Cant show cards only in showdown");
+        player.showCards = true;
         break;
       default:
-        throw new Error("Acción inválida.");
+        throw new Error(`Invalid player action, ${JSON.stringify(action)}`);
+    }
+
+    const activePlayers = this.players.filter((p) => !p.isFolded);
+    if (activePlayers.length === 1) {
+      console.debug(
+        "Only one player left with bet. Game state changed showdown"
+      );
+      this.gameState = GameState.Showdown;
     }
 
     if (this.isBettingRoundOver()) {
@@ -498,7 +589,14 @@ export default class Table {
     this.nextPlayer();
   }
 
-  // Comprueba si la ronda de apuestas ha terminado
+  /**
+   * Checks if the betting round is over.
+   *
+   * The betting round is considered over if all players have either folded
+   * or matched the current bet amount.
+   *
+   * @returns {boolean} True if the betting round is over, otherwise false.
+   */
   private isBettingRoundOver(): boolean {
     // La ronda de apuestas termina si todos los jugadores han igualado la apuesta actual o se han retirado
     return this.players.every(
@@ -506,13 +604,11 @@ export default class Table {
     );
   }
 
-  // Avanza al siguiente jugador
   private nextPlayer(): void {
     this.currentPlayerIndex = this.getNextPlayerIndex(this.currentPlayerIndex);
     this.processPlayerAction();
   }
 
-  // Encuentra el siguiente índice del jugador que no se haya retirado
   private getNextPlayerIndex(currentIndex: number): number {
     let index = (currentIndex + 1) % this.players.length;
     while (this.players[index].isFolded && index !== currentIndex) {
@@ -521,21 +617,23 @@ export default class Table {
     return index;
   }
 
-  // Devuelve el valor de la ciega grande
+  /**
+   * Gets the current big blind value.
+   *
+   * @returns {number} The current big blind value.
+   */
   private getBigBlind(): number {
-    return 10; // Valor predeterminado para simplificación
+    return this.bigBlind;
   }
 
   private getSmallBlind() {
-    return 10;
+    return this.smallBlind;
   }
 
-  // Obtener la apuesta máxima actual
   private getMaxBet(): number {
     return Math.max(...this.players.map((p) => p.betAmount));
   }
 
-  // Reinicia la mesa para una nueva mano
   resetTable(): void {
     this.communityCards = [];
     this.players.forEach((player) => {
@@ -546,7 +644,12 @@ export default class Table {
     this.initializeDeck();
     this.gameState = GameState.PreFlop;
   }
-
+  /**
+   * Returns the hand history for the current hand.
+   *
+   * @returns {GameLogEntry[]} An array of GameLogEntry objects representing
+   * the actions and events that occurred during the current hand.
+   */
   getHandHistory(): GameLogEntry[] {
     return this.history;
   }

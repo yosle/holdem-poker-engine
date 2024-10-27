@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Player, PlayerAction } from "../Player";
+import Player, { PlayerAction } from "../Player";
 import Card from "../Card";
 
 describe("Player class Test suite", () => {

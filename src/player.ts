@@ -12,7 +12,7 @@ export const PlayerAction = {
 
 export type PlayerAction = (typeof PlayerAction)[keyof typeof PlayerAction];
 
-export class Player {
+export default class Player {
   constructor(
     id: string,
     name: string,
@@ -35,6 +35,7 @@ export class Player {
   isFolded: boolean = false;
   betAmount: number = 0;
   seatNumber: number = -1;
+  showCards: boolean = false;
 
   updateChips(amount: number) {
     this.chips += amount;
