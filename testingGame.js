@@ -4,11 +4,13 @@ const Game = require('./dist/Game').default
 const { PlayerAction } = require('./dist/Player')
 const Player = require("./dist/Player").default
 
-const EventEmitter = require('events')
+const { GAME_EVENTS } = require('./dist/Table')
 
-const eventEmitter = new EventEmitter();
 
-const table = new Table(10, [], 0, 5, 5);
+
+const table = new Table({
+    playerTurnTimeLimit: 10
+});
 
 table.events.on("PlayerTurn", (data) => {
     console.log("Recibido desde fuera", data)
@@ -30,6 +32,18 @@ table.seatPlayer(player7);
 
 table.startGame()
 
+table.playerAction(2, PlayerAction.Bet, 50)
+table.playerAction(3, PlayerAction.Call)
+table.playerAction(4, PlayerAction.Call)
+table.playerAction(5, PlayerAction.Call)
+table.playerAction(6, PlayerAction.Call)
+table.playerAction(7, PlayerAction.Call)
+table.playerAction(1, PlayerAction.Call)
+
+console.log("Esto deberia estar en el flop", player1.getHandEmojiString())
+table.events.on(GAME_EVENTS.GAME_ENDED, (data) => {
+    console.log("data de winners", data)
+})
 // console.log(JSON.stringify(table.history, undefined, 4))
 
 
@@ -43,7 +57,6 @@ table.startGame()
 
 // console.log("Players antes de startGame", JSON.stringify(table.history));
 
-const game = new Game()
 
 // table.playerAction(1, PlayerAction.Check)
 // table.playerAction(3, PlayerAction.Check)

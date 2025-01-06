@@ -54,21 +54,25 @@ export default class Table {
   public playerTurnTimeLimit = 5;
   public history: GameLogEntry[] = [];
   public playerTurnTimeout: any;
+  public maxPlayers: number;
 
   constructor(
-    private maxPlayers: number = 10,
-    players: Player[] = [],
-    currentDealerIndex = 0,
-    minimunbet = 5,
-    playerTurnTimeLimit = 15
+    options: {
+      maxPlayers?: number;
+      players?: Player[];
+      currentDealerIndex?: number;
+      minimunbet?: number;
+      playerTurnTimeLimit?: number;
+    } = {}
   ) {
     this.events = new PokerEngineEvents();
     this.playerTurnTimeout = new PlayerTurnTimeout(this);
-    this.maxPlayers = maxPlayers;
-    this.players = players;
-    this.currentDealerIndex = currentDealerIndex;
-    this.minimumBet = minimunbet;
-    this.playerTurnTimeLimit = playerTurnTimeLimit;
+    this.maxPlayers =
+      options.maxPlayers !== undefined ? options.maxPlayers : 10;
+    this.players = options.players ?? [];
+    this.currentDealerIndex = options.currentDealerIndex ?? 0;
+    this.minimumBet = options.minimunbet ?? 5;
+    this.playerTurnTimeLimit = options.playerTurnTimeLimit ?? 15;
     this.initializeDeck();
   }
 
@@ -326,9 +330,9 @@ export default class Table {
     }
   }
 
-  private determineWinners(): Player[] {
-    console.log("Determining winners");
-    let winners: Player[] = [];
+  private determineWinners(): any {
+    console.debug("Determining winners");
+    let winners: any[] = [];
     const activePlayers = this.players.filter((player) => !player.isFolded);
 
     const communityCards = this.communityCards.map((card) =>
@@ -343,12 +347,27 @@ export default class Table {
     } else {
       activePlayers.forEach((player) => {
         const playerHand = player.hand.map((card) => cardToString(card));
-        const handValue = evalHand([...playerHand, ...communityCards]).value;
+        const handEval = evalHand([...playerHand, ...communityCards]);
+        const handValue = handEval.value;
         if (handValue > highestValue) {
           highestValue = handValue;
-          winners = [player]; // Nueva mano con mayor valor
+          winners = [
+            {
+              player,
+              rank: handEval.handRank,
+              type: handEval.handType,
+              value: handEval.value,
+              name: handEval.handName,
+            },
+          ]; // Nueva mano con mayor valor
         } else if (handValue === highestValue) {
-          winners.push(player); // Empate, agregamos al jugador
+          winners.push({
+            player,
+            rank: handEval.handRank,
+            type: handEval.handType,
+            value: handEval.value,
+            name: handEval.handName,
+          }); // Empate, agregamos al jugador
         }
       });
     }
@@ -366,16 +385,21 @@ export default class Table {
           player.hand.map((card) => cardToEmojiString(card)).join(" ")
       )
     );
-    console.log("Winner(s): ");
-    winners.map((player) => {
+    console.log("Winners: ");
+    winners.map((winner) =>
       console.log(
-        "Name: " + player.name + " Hand: ",
-        [
-          ...player.hand.map((card) => cardToEmojiString(card)),
-          ...this.communityCards.map((card) => cardToEmojiString(card)),
-        ].join(" ")
-      );
-    });
+        "Name: " +
+          winner.player.name +
+          " Hand: " +
+          winner.player.hand
+            .map((card: Card) => cardToEmojiString(card))
+            .join(" ") +
+          " Winning Hand: " +
+          winner.name +
+          " Value: " +
+          winner.value
+      )
+    );
 
     const dividedPot = this.pot / winners.length;
     winners.forEach((winner) => (winner.chips += dividedPot));
@@ -389,9 +413,10 @@ export default class Table {
     this.pot = 0;
     this.events.emit(GAME_EVENTS.GAME_ENDED, {
       winners,
+      comunityCards: this.communityCards,
       // add more info like the hand name
     });
-    return winners;
+    return { winners, comunityCards: this.communityCards };
   }
 
   // Inicia una ronda de apuestas

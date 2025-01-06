@@ -22,14 +22,14 @@ describe("Table class", () => {
   // });
 
   it("should add a player to the table", () => {
-    const table = new Table();
+    const table = new Table({});
     const player = new Player("id", "name", 100);
     table.players.push(player);
     expect(table.players).toEqual([player]);
   });
 
   it("should deal initial cards to players", () => {
-    const table = new Table();
+    const table = new Table({});
     const player1 = new Player("id1", "name1", 100);
     const player2 = new Player("id2", "name2", 100);
     table.seatPlayer(player1);
@@ -39,7 +39,12 @@ describe("Table class", () => {
   it("should start a betting round", () => {
     const player1 = new Player("id1", "name1", 100);
     const player2 = new Player("id2", "name2", 100);
-    const table = new Table(2, [player1, player2], 0, 10, 5);
+    const table = new Table({
+      maxPlayers: 2,
+      players: [player1, player2],
+      minimunbet: 10,
+      playerTurnTimeLimit: 1,
+    });
     table.startGame();
     expect(table.minimumBet).toBe(10);
     expect(table.currentBet).toBe(0);
