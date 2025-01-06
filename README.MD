@@ -2,17 +2,49 @@
 
 ---
 
-Welcome to **APE**, the ultimate TypeScript-powered poker engine for building Texas Hold'em games! Whether you're building a multiplayer poker platform, a simulation engine, or just having some fun, APE provides a flexible, modular, and fully customizable engine for managing Texas Hold'em poker hands, game states, and player actions.
+This project started when I realized I needed to build a state machine for a 2D poker game, but none of the existing solutions really fit my needs. So, I created APE – the ultimate TypeScript-powered poker engine for building Texas Hold'em games! Whether you're building a multiplayer poker platform, a simulation engine, or just having some fun, APE provides a flexible, modular, and fully customizable solution for managing poker hands, game states, and player actions. As I dove into the process, I ended up learning a ton along the way, and it’s been an amazing experience putting everything together!
 
 ## Features
 
-- 🌐 **Game Management**: Track multiple poker games with ease.
-- 🃏 **Hand Management**: Each game consists of multiple hands, with full hand history tracking.
-- 🎲 **Flexible Game States**: Seamless transitions between pre-flop, flop, turn, river, and showdown.
-- 👤 **Player Actions**: Track player actions like **Bet**, **Call**, **Fold**, **Check**, and **Raise**.
-- 💸 **Pot Management**: Automatically manage pot sizes and distribute winnings.
-- 🔄 **Hand History**: Detailed logging of every action, bet, and game event for each hand.
-- 🚀 **TypeScript Powered**: Written in TypeScript for full type safety and easy integration with modern projects.
+1. Player Management
+Players can join the table and be associated with a specific seat.
+Player information includes name, hand, bet amount, and their status.
+Players are tracked by their unique seat.
+2. Game State Management
+The game state is updated based on player actions (e.g., bets, folds).
+Hand history tracking is implemented for reviewing the sequence of actions in a game.
+State of the game is updated in real-time as players make moves.
+3. Betting System
+Players can place bets, fold, or check.
+The engine tracks player bets for each round.
+Pot management to accumulate the total money staked by players during a hand.
+Player’s individual bet amounts are updated throughout the game.
+4. Card Handling
+Cards are represented in an object-oriented structure, likely using CardSuit and CardRank.
+Deck of cards is shuffled and distributed to players.
+Card actions such as revealing community cards (flop, turn, river) are handled.
+Emoji-based visual representation for displaying cards.
+5. Hand Evaluation
+Each player's hand is evaluated to determine the best possible poker hand.
+Multiple players can be evaluated at once to find the winners.
+Hand rankings such as “High Card”, “Pair”, “Full House” are likely part of the hand evaluation logic.
+6. Winner Determination
+After all rounds are completed, the engine determines who wins based on the best hand.
+Winners are printed with their hand details, hand ranking, and winning value.
+7. Logging
+Detailed logs are generated for players’ actions, including bet amounts and final hands.
+Log output for the state of the game and the winners at the end of a hand.
+8. AI & Game Flow Management
+The game’s flow is managed by a state machine (likely implied), progressing through stages like pre-flop, flop, turn, and river.
+Likely handling for multiple players acting sequentially.
+9. Game Round Mechanics
+Tracks and displays each phase of the poker hand.
+Community cards are revealed progressively, and players act accordingly.
+Likely has the ability to process player actions like folding, raising, checking, and all-in.
+10. Multiplayer Support
+Supports multiple players, each with their unique cards and actions.
+Players interact with the game in real-time with their respective bets and actions.
+
 
 ## Installation
 
