@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsup src/**.ts --format cjs,esm --dts",
+    "release": "npm run build && changeset publish",
     "test": "vitest"
   },
   "author": "Yosleivy Baez Acosta",
