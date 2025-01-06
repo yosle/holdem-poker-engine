@@ -105,18 +105,8 @@ console.log(gameHistory);
 
 ## API Documentation
 
-### `Game`
-The main class that manages multiple hands in a poker game session.
-
-- **`startNewHand()`**: Starts a new hand of poker.
-- **`getHandHistory()`**: Returns the history of all hands played in the game.
-
 ### `Table`
 Each `Table` represents a single hand in the game.
-
-- **`recordPlayerAction(action: PlayerActionRecord)`**: Records an action taken by a player during the hand.
-- **`recordGameStateChange(state: GameStateChange)`**: Records a change in the game state (e.g., transitioning from flop to turn).
-- **`getHandHistory()`**: Returns the hand history for the current hand.
 
 ### `HandHistory`
 Stores the full history of a specific hand, including actions, player states, and game events.
@@ -156,5 +146,3 @@ Contributions are welcome! Feel free to open an issue or submit a pull request i
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
-This should give a solid foundation for your poker engine library's `README.md`, providing installation instructions, usage examples, and API documentation!
