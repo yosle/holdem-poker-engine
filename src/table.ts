@@ -385,6 +385,16 @@ export default class Table {
           player.hand.map((card) => cardToEmojiString(card)).join(" ")
       )
     );
+
+    if (winners.length > 1) {
+      const dividedPot = this.pot / winners.length;
+      winners.forEach((winner) => (winner.chips += dividedPot));
+    } else {
+      winners[0].player.chips += this.pot;
+    }
+    // reset pot
+    this.pot = 0;
+
     console.log("Winners: ");
     winners.map((winner) =>
       console.log(
@@ -397,20 +407,12 @@ export default class Table {
           " Winning Hand: " +
           winner.name +
           " Value: " +
-          winner.value
+          winner.value +
+          " Chips: " +
+          winner.player.chips
       )
     );
 
-    const dividedPot = this.pot / winners.length;
-    winners.forEach((winner) => (winner.chips += dividedPot));
-    console.log(
-      "Winners: " +
-        winners.map(
-          (player) => player.name + " with " + player.chips + " chips"
-        )
-    );
-
-    this.pot = 0;
     this.events.emit(GAME_EVENTS.GAME_ENDED, {
       winners,
       comunityCards: this.communityCards,
