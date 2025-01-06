@@ -1,5 +1,5 @@
 {
-  "name": "ape-poker-engine",
+  "name": "holdem-engine",
   "version": "0.0.1",
   "description": "A TypeScript-based poker engine that supports various poker game mechanics and events.",
   "main": "index.js",

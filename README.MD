@@ -1,4 +1,4 @@
-# APE (Another Poker Engine) – Texas Hold'em Poker Engine
+# HoldemEngine – Texas Hold'em Poker Engine
 
 ---
 
