@@ -51,13 +51,13 @@ Players interact with the game in real-time with their respective bets and actio
 You can install the APE Poker Engine via `npm`:
 
 ```bash
-npm install ape-poker-engine
+npm install holdem-engine
 ```
 
 Or via `yarn`:
 
 ```bash
-yarn add ape-poker-engine
+yarn add holdem-engine
 ```
 
 ## Getting Started
@@ -67,7 +67,7 @@ Here’s a quick example to get you started with APE:
 ### 1. Create a new game instance
 
 ```typescript
-import { Game } from 'ape-poker-engine';
+import { Game } from 'holdem-engine';
 
 const game = new Game();
 ```
