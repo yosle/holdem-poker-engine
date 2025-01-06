@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import Table, { GameState } from "../Table";
-import Player from "../Player";
-import Card from "../Card";
+import Player from "../interfaces/Player";
+import Card from "../interfaces/Card";
 import PokerEngineEvents from "../PokerEngineEvents";
 
 describe("Table class", () => {

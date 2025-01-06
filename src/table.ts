@@ -3,13 +3,14 @@ import Card, {
   CardRank,
   cardToString,
   cardToEmojiString,
-} from "./Card";
-import { GameLogEntry } from "./GameLogEntry";
-import Player, { PlayerAction } from "./Player";
+} from "./interfaces/Card";
+import { GameLogEntry } from "./interfaces/GameLogEntry";
+import Player, { PlayerAction } from "./interfaces/Player";
 import { evalHand } from "poker-evaluator-ts";
 import PokerEngineEvents from "./PokerEngineEvents";
 import PlayerTurnTimeout from "./PlayerTurnTimeOut";
 import { clearTimeout } from "timers";
+import { logger } from "./Utils";
 
 export enum GameState {
   WaitingForPlayers,
@@ -147,7 +148,9 @@ export default class Table {
     });
 
     this.events.on(GAME_EVENTS.PLAYER_TURN_EXPIRED, (data) => {
-      if (this.gameState === GameState.Ended) return;
+      if (this.gameState === GameState.Ended) {
+        return;
+      }
       let autoPlay: PlayerAction = PlayerAction.Check;
       if (this.gameState === GameState.Showdown) {
         autoPlay = PlayerAction.Hide; // later implement this
@@ -160,9 +163,12 @@ export default class Table {
         player.betAmount === 0 &&
         player.id === this.players[this.currentSmallBlindIndex].id
       ) {
-        console.log(
-          `Time is up for player ${player.name} turn! Automatic play for player is ${autoPlay} game state: ${this.gameState}`
-        );
+        logger.info(`First turn of small blind. Automatic play`, {
+          name: player.name,
+          playerId: player.id,
+          action: autoPlay,
+          gameState: this.gameState,
+        });
         this.playerAction(player.id, PlayerAction.Bet, this.minimumBet);
         return;
       }
@@ -316,6 +322,9 @@ export default class Table {
         break;
       case GameState.Ended:
         // would do somtheing here in the future
+        this.events.removeAllListeners(GAME_EVENTS.PLAYER_TURN_EXPIRED);
+        this.events.removeAllListeners(GAME_EVENTS.PLAYER_ACTION);
+        this.events.removeAllListeners(GAME_EVENTS.PLAYER_TURN);
         clearTimeout(this.playerTurnTimeout);
         break;
       default:
@@ -343,7 +352,13 @@ export default class Table {
 
     if (activePlayers.length === 1) {
       // One player left is the winner
-      winners = activePlayers;
+      winners.push({
+        player: activePlayers[0],
+        rank: null,
+        type: null,
+        value: null,
+        handName: null,
+      });
     } else {
       activePlayers.forEach((player) => {
         const playerHand = player.hand.map((card) => cardToString(card));
@@ -366,7 +381,7 @@ export default class Table {
             rank: handEval.handRank,
             type: handEval.handType,
             value: handEval.value,
-            name: handEval.handName,
+            handName: handEval.handName,
           }); // Empate, agregamos al jugador
         }
       });
@@ -395,23 +410,7 @@ export default class Table {
     // reset pot
     this.pot = 0;
 
-    console.log("Winners: ");
-    winners.map((winner) =>
-      console.log(
-        "Name: " +
-          winner.player.name +
-          " Hand: " +
-          winner.player.hand
-            .map((card: Card) => cardToEmojiString(card))
-            .join(" ") +
-          " Winning Hand: " +
-          winner.name +
-          " Value: " +
-          winner.value +
-          " Chips: " +
-          winner.player.chips
-      )
-    );
+    logger.info("Winner(s): ", winners);
 
     this.events.emit(GAME_EVENTS.GAME_ENDED, {
       winners,

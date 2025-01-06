@@ -1,3 +1,3 @@
-export * from "./Card";
-export * from "./Player";
+export * from "./interfaces/Card";
+export * from "./interfaces/Player";
 export * from "./Table";
