@@ -75,6 +75,91 @@ export default class Table {
     this.minimumBet = options.minimunbet ?? 5;
     this.playerTurnTimeLimit = options.playerTurnTimeLimit ?? 15;
     this.initializeDeck();
+
+    this.events.on(
+      GAME_EVENTS.PLAYER_ACTION,
+      (data: { playerId: string; action: PlayerAction; amount?: number }) => {
+        clearTimeout(this.playerTurnTimeout); // Si el jugador actúa, cancelar el timeout
+        logger.info(`The player ${data.playerId} make: ${data.action}`);
+
+        // Update history
+        this.history.push({
+          timestamp: new Date(),
+          type: "PlayerAction",
+          communityCards: this.communityCards,
+          details: {
+            action: data.action,
+            playerId: data.playerId,
+            amount: data?.amount,
+          },
+          players: this.players.map((p) => {
+            return {
+              playerId: p.id,
+              chips: p.chips,
+              cards: p.hand,
+              isFolded: p.isFolded,
+              betAmount: p.betAmount,
+            };
+          }),
+        });
+      }
+    );
+
+    this.events.on(GAME_EVENTS.PLAYER_TURN_EXPIRED, (data) => {
+      if (this.gameState === GameState.Ended) {
+        return;
+      }
+      let autoPlay: PlayerAction = PlayerAction.Check;
+      if (this.gameState === GameState.Showdown) {
+        autoPlay = PlayerAction.Hide; // later implement this
+      }
+      const player = this.players[this.currentPlayerIndex];
+
+      // first turn of small blind on pre-flop, default action is bet the minimun bet
+      if (
+        this.gameState === GameState.PreFlop &&
+        player.betAmount === 0 &&
+        player.id === this.players[this.currentSmallBlindIndex].id
+      ) {
+        logger.info(`First turn of small blind. Automatic play`, {
+          name: player.name,
+          playerId: player.id,
+          action: autoPlay,
+          gameState: this.gameState,
+        });
+        this.playerAction(player.id, PlayerAction.Bet, this.minimumBet);
+        return;
+      }
+
+      // If is first turn of big blind and times up for player automatic play is double of smallBlind
+      if (
+        this.gameState === GameState.PreFlop &&
+        player.betAmount === 0 &&
+        player.id === this.players[this.currentBigBlindIndex].id
+      ) {
+        logger.info(
+          `First turn for big blind ${
+            player.name
+          } Automatic play for player is ${autoPlay} game state: ${[
+            this.gameState,
+          ]}`
+        );
+        this.playerAction(player.id, PlayerAction.Bet, this.minimumBet * 2);
+        return;
+      }
+
+      if (player.betAmount < this.currentBet) {
+        autoPlay = PlayerAction.Fold;
+      }
+      logger.info(
+        `Time is up for player ${
+          player.name
+        } turn! Automatic play for player is ${autoPlay} game state: ${[
+          this.gameState,
+        ]}`
+      );
+      this.playerAction(player.id, autoPlay);
+    });
   }
 
   // Inicializa el mazo con 52 cartas
@@ -146,54 +231,6 @@ export default class Table {
     this.events.emit(GAME_EVENTS.PLAYER_TURN, {
       playerId: this.players[this.currentPlayerIndex].id,
     });
-
-    this.events.on(GAME_EVENTS.PLAYER_TURN_EXPIRED, (data) => {
-      if (this.gameState === GameState.Ended) {
-        return;
-      }
-      let autoPlay: PlayerAction = PlayerAction.Check;
-      if (this.gameState === GameState.Showdown) {
-        autoPlay = PlayerAction.Hide; // later implement this
-      }
-      const player = this.players[this.currentPlayerIndex];
-
-      // first turn of small blind on pre-flop, default action is bet the minimun bet
-      if (
-        this.gameState === GameState.PreFlop &&
-        player.betAmount === 0 &&
-        player.id === this.players[this.currentSmallBlindIndex].id
-      ) {
-        logger.info(`First turn of small blind. Automatic play`, {
-          name: player.name,
-          playerId: player.id,
-          action: autoPlay,
-          gameState: this.gameState,
-        });
-        this.playerAction(player.id, PlayerAction.Bet, this.minimumBet);
-        return;
-      }
-
-      // If is first turn of big blind and times up for player automatic play is double of smallBlind
-      if (
-        this.gameState === GameState.PreFlop &&
-        player.betAmount === 0 &&
-        player.id === this.players[this.currentBigBlindIndex].id
-      ) {
-        console.log(
-          `Time is up for player ${player.name} turn! Automatic play for player is ${autoPlay} game state: ${this.gameState}`
-        );
-        this.playerAction(player.id, PlayerAction.Bet, this.minimumBet * 2);
-        return;
-      }
-
-      if (player.betAmount < this.currentBet) {
-        autoPlay = PlayerAction.Fold;
-      }
-      console.log(
-        `Time is up for player ${player.name} turn! Automatic play for player is ${autoPlay} game state: ${this.gameState}`
-      );
-      this.playerAction(player.id, autoPlay);
-    });
   }
 
   // Reparte dos cartas a cada jugador
@@ -207,9 +244,19 @@ export default class Table {
   proceedToNextRound(): void {
     switch (this.gameState) {
       case GameState.PreFlop:
-        console.debug(`Starting Flop. current bet: ${this.currentBet}`);
         this.gameState = GameState.Flop;
         this.dealCommunityCards(3);
+
+        logger.debug(`Game is on FLOP.`, {
+          currentBet: this.currentBet,
+          pot: this.pot,
+          comunityCards: this.communityCards.map((card) => cardToString(card)),
+        });
+        this.events.emit(GAME_EVENTS.GAME_STATE_CHANGED, {
+          details: {
+            newState: GameState.Flop,
+          },
+        });
         this.history.push({
           timestamp: new Date(),
           type: "GameStateChange",
@@ -229,9 +276,13 @@ export default class Table {
         });
         break;
       case GameState.Flop:
-        console.debug(`Starting Turn. current bet: ${this.currentBet}`);
         this.gameState = GameState.Turn;
         this.dealCommunityCards(1);
+        console.debug(`Game is on TURN.`, {
+          currentBet: this.currentBet,
+          pot: this.pot,
+          comunityCards: this.communityCards.map((card) => cardToString(card)),
+        });
         this.history.push({
           timestamp: new Date(),
           type: "GameStateChange",
@@ -251,9 +302,14 @@ export default class Table {
         });
         break;
       case GameState.Turn:
-        console.debug(`Starting River. current bet: ${this.currentBet}`);
         this.gameState = GameState.River;
         this.dealCommunityCards(1);
+        logger.debug(`Game is on River. current bet`, {
+          currentBet: this.currentBet,
+          pot: this.pot,
+          comunityCards: this.communityCards.map((card) => cardToString(card)),
+        });
+
         this.history.push({
           timestamp: new Date(),
           type: "GameStateChange",
@@ -270,6 +326,11 @@ export default class Table {
               betAmount: p.betAmount,
             };
           }),
+        });
+        this.events.emit(GAME_EVENTS.GAME_STATE_CHANGED, {
+          details: {
+            newState: GameState.River,
+          },
         });
         break;
       case GameState.River:
@@ -340,7 +401,6 @@ export default class Table {
   }
 
   private determineWinners(): any {
-    console.debug("Determining winners");
     let winners: any[] = [];
     const activePlayers = this.players.filter((player) => !player.isFolded);
 
@@ -387,7 +447,7 @@ export default class Table {
       });
     }
 
-    console.log(
+    logger.info(
       "Comunity cards: ",
       this.communityCards.map((card) => cardToEmojiString(card)).join(" ")
     );
@@ -466,35 +526,6 @@ export default class Table {
       );
     }
 
-    this.events.on(
-      GAME_EVENTS.PLAYER_ACTION,
-      (data: { playerId: string; action: PlayerAction; amount?: number }) => {
-        clearTimeout(this.playerTurnTimeout); // Si el jugador actúa, cancelar el timeout
-        console.log(`The player ${playerId} make: ${data.action}`);
-
-        // Update history
-        this.history.push({
-          timestamp: new Date(),
-          type: "PlayerAction",
-          communityCards: this.communityCards,
-          details: {
-            action: data.action,
-            playerId: data.playerId,
-            amount: data?.amount,
-          },
-          players: this.players.map((p) => {
-            return {
-              playerId: p.id,
-              chips: p.chips,
-              cards: p.hand,
-              isFolded: p.isFolded,
-              betAmount: p.betAmount,
-            };
-          }),
-        });
-      }
-    );
-
     switch (action) {
       case PlayerAction.Fold:
         player.isFolded = true;
@@ -531,6 +562,7 @@ export default class Table {
         } else {
           throw new Error("Must specify amount to Raise");
         }
+
         this.events.emit(GAME_EVENTS.PLAYER_ACTION, { playerId, action });
         break;
       case PlayerAction.Bet:
