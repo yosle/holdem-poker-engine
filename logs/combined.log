@@ -1,0 +1,166 @@
+2025-01-07 04:32:18 [[34mdebug[39m]: [34mSet waiting time for player Player 2 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":2}
+2025-01-07 04:32:23 [[32minfo[39m]: [32mThe player 2 action: Bet[39m {"0":"T","1":"X","2":"H","3":"M","amount":20}
+2025-01-07 04:32:23 [[34mdebug[39m]: [34mSet waiting time for player Player 3 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":3}
+2025-01-07 04:32:28 [[32minfo[39m]: [32mThe player 3 action: Call[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:32:28 [[34mdebug[39m]: [34mSet waiting time for player Player 4 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":4}
+2025-01-07 04:32:33 [[32minfo[39m]: [32mThe player 4 action: Raise[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:32:33 [[34mdebug[39m]: [34mSet waiting time for player Player 5 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":5}
+2025-01-07 04:32:38 [[32minfo[39m]: [32mThe player 5 action: Fold[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:32:38 [[34mdebug[39m]: [34mSet waiting time for player Player 6 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":6}
+2025-01-07 04:32:43 [[32minfo[39m]: [32mThe player 6 action: Call[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:32:43 [[34mdebug[39m]: [34mSet waiting time for player Player 7 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":7}
+2025-01-07 04:32:48 [[32minfo[39m]: [32mThe player 7 action: Call[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:32:48 [[34mdebug[39m]: [34mSet waiting time for player Player 8 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":8}
+2025-01-07 04:32:53 [[32minfo[39m]: [32mThe player 8 action: Fold[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:32:53 [[34mdebug[39m]: [34mSet waiting time for player Player 9 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":9}
+2025-01-07 04:32:58 [[32minfo[39m]: [32mThe player 9 action: Call[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:32:58 [[34mdebug[39m]: [34mSet waiting time for player Player 10 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":10}
+2025-01-07 04:33:03 [[32minfo[39m]: [32mThe player 10 action: Call[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:33:03 [[34mdebug[39m]: [34mSet waiting time for player Player 1 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":1}
+2025-01-07 04:33:08 [[32minfo[39m]: [32mThe player 1 action: Call[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:33:08 [[34mdebug[39m]: [34mSet waiting time for player Player 2 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":2}
+2025-01-07 04:33:13 [[32minfo[39m]: [32mThe player 2 action: Check[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:33:13 [[34mdebug[39m]: [34mSet waiting time for player Player 3 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":3}
+2025-01-07 04:33:28 [[32minfo[39m]: [32mTime is up for player Player 3 turn! Automatic play for player is Fold game state: 1[39m {"0":"T","1":"X","2":"H","3":"M"}
+2025-01-07 04:33:28 [[32minfo[39m]: [32mThe player 3 action: Fold[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:33:28 [[34mdebug[39m]: [34mSet waiting time for player Player 4 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":4}
+2025-01-07 04:33:43 [[32minfo[39m]: [32mTime is up for player Player 4 turn! Automatic play for player is Fold game state: 1[39m {"0":"T","1":"X","2":"H","3":"M"}
+2025-01-07 04:33:43 [[32minfo[39m]: [32mThe player 4 action: Fold[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:33:43 [[34mdebug[39m]: [34mSet waiting time for player Player 6 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":6}
+2025-01-07 04:33:58 [[32minfo[39m]: [32mTime is up for player Player 6 turn! Automatic play for player is Check game state: 1[39m {"0":"T","1":"X","2":"H","3":"M"}
+2025-01-07 04:33:58 [[32minfo[39m]: [32mThe player 6 action: Check[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:33:58 [[34mdebug[39m]: [34mSet waiting time for player Player 7 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":7}
+2025-01-07 04:34:13 [[32minfo[39m]: [32mTime is up for player Player 7 turn! Automatic play for player is Check game state: 1[39m {"0":"T","1":"X","2":"H","3":"M"}
+2025-01-07 04:34:13 [[32minfo[39m]: [32mThe player 7 action: Check[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:34:13 [[34mdebug[39m]: [34mSet waiting time for player Player 9 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":9}
+2025-01-07 04:34:28 [[32minfo[39m]: [32mTime is up for player Player 9 turn! Automatic play for player is Check game state: 1[39m {"0":"T","1":"X","2":"H","3":"M"}
+2025-01-07 04:34:28 [[32minfo[39m]: [32mThe player 9 action: Check[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:34:28 [[34mdebug[39m]: [34mSet waiting time for player Player 10 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":10}
+2025-01-07 04:34:43 [[32minfo[39m]: [32mTime is up for player Player 10 turn! Automatic play for player is Check game state: 1[39m {"0":"T","1":"X","2":"H","3":"M"}
+2025-01-07 04:34:43 [[32minfo[39m]: [32mThe player 10 action: Check[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:34:43 [[34mdebug[39m]: [34mSet waiting time for player Player 1 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":1}
+2025-01-07 04:34:58 [[32minfo[39m]: [32mTime is up for player Player 1 turn! Automatic play for player is Check game state: 1[39m {"0":"T","1":"X","2":"H","3":"M"}
+2025-01-07 04:34:58 [[32minfo[39m]: [32mThe player 1 action: Check[39m {"0":"T","1":"X","2":"H","3":"M","amount":null}
+2025-01-07 04:34:58 [[34mdebug[39m]: [34mSet waiting time for player Player 2 turn[39m {"0":"T","1":"X","2":"H","3":"M","seconds":15,"playerId":2}
+2025-01-07 04:36:39 [[34mdebug[39m]: [34mSet waiting time for player Player 2 turn[39m {"seconds":15,"playerId":2}
+2025-01-07 04:36:44 [[32minfo[39m]: [32mThe player 2 action: Bet[39m {"amount":20}
+2025-01-07 04:36:44 [[34mdebug[39m]: [34mSet waiting time for player Player 3 turn[39m {"seconds":15,"playerId":3}
+2025-01-07 04:36:49 [[32minfo[39m]: [32mThe player 3 action: Call[39m {"amount":null}
+2025-01-07 04:36:49 [[34mdebug[39m]: [34mSet waiting time for player Player 4 turn[39m {"seconds":15,"playerId":4}
+2025-01-07 04:36:54 [[32minfo[39m]: [32mThe player 4 action: Raise[39m {"amount":null}
+2025-01-07 04:36:54 [[34mdebug[39m]: [34mSet waiting time for player Player 5 turn[39m {"seconds":15,"playerId":5}
+2025-01-07 04:36:59 [[32minfo[39m]: [32mThe player 5 action: Fold[39m {"amount":null}
+2025-01-07 04:36:59 [[34mdebug[39m]: [34mSet waiting time for player Player 6 turn[39m {"seconds":15,"playerId":6}
+2025-01-07 04:37:04 [[32minfo[39m]: [32mThe player 6 action: Call[39m {"amount":null}
+2025-01-07 04:37:04 [[34mdebug[39m]: [34mSet waiting time for player Player 7 turn[39m {"seconds":15,"playerId":7}
+2025-01-07 04:37:09 [[32minfo[39m]: [32mThe player 7 action: Call[39m {"amount":null}
+2025-01-07 04:37:09 [[34mdebug[39m]: [34mSet waiting time for player Player 8 turn[39m {"seconds":15,"playerId":8}
+2025-01-07 04:37:14 [[32minfo[39m]: [32mThe player 8 action: Fold[39m {"amount":null}
+2025-01-07 04:37:14 [[34mdebug[39m]: [34mSet waiting time for player Player 9 turn[39m {"seconds":15,"playerId":9}
+2025-01-07 04:37:19 [[32minfo[39m]: [32mThe player 9 action: Call[39m {"amount":null}
+2025-01-07 04:37:19 [[34mdebug[39m]: [34mSet waiting time for player Player 10 turn[39m {"seconds":15,"playerId":10}
+2025-01-07 04:37:24 [[32minfo[39m]: [32mThe player 10 action: Call[39m {"amount":null}
+2025-01-07 04:37:24 [[34mdebug[39m]: [34mSet waiting time for player Player 1 turn[39m {"seconds":15,"playerId":1}
+2025-01-07 04:37:29 [[32minfo[39m]: [32mThe player 1 action: Call[39m {"amount":null}
+2025-01-07 04:37:29 [[34mdebug[39m]: [34mSet waiting time for player Player 2 turn[39m {"seconds":15,"playerId":2}
+2025-01-07 04:37:34 [[32minfo[39m]: [32mThe player 2 action: Check[39m {"amount":null}
+2025-01-07 04:37:34 [[34mdebug[39m]: [34mSet waiting time for player Player 3 turn[39m {"seconds":15,"playerId":3}
+2025-01-07 04:37:49 [[32minfo[39m]: [32mTime is up for player Player 3 turn! Automatic play for player is Fold game state: 1[39m {}
+2025-01-07 04:37:49 [[32minfo[39m]: [32mThe player 3 action: Fold[39m {"amount":null}
+2025-01-07 04:37:49 [[34mdebug[39m]: [34mSet waiting time for player Player 4 turn[39m {"seconds":15,"playerId":4}
+2025-01-07 04:38:04 [[32minfo[39m]: [32mTime is up for player Player 4 turn! Automatic play for player is Fold game state: 1[39m {}
+2025-01-07 04:38:04 [[32minfo[39m]: [32mThe player 4 action: Fold[39m {"amount":null}
+2025-01-07 04:38:04 [[34mdebug[39m]: [34mSet waiting time for player Player 6 turn[39m {"seconds":15,"playerId":6}
+2025-01-07 04:38:19 [[32minfo[39m]: [32mTime is up for player Player 6 turn! Automatic play for player is Check game state: 1[39m {}
+2025-01-07 04:38:19 [[32minfo[39m]: [32mThe player 6 action: Check[39m {"amount":null}
+2025-01-07 04:38:19 [[34mdebug[39m]: [34mSet waiting time for player Player 7 turn[39m {"seconds":15,"playerId":7}
+2025-01-07 04:38:34 [[32minfo[39m]: [32mTime is up for player Player 7 turn! Automatic play for player is Check game state: 1[39m {}
+2025-01-07 04:38:34 [[32minfo[39m]: [32mThe player 7 action: Check[39m {"amount":null}
+2025-01-07 04:38:34 [[34mdebug[39m]: [34mSet waiting time for player Player 9 turn[39m {"seconds":15,"playerId":9}
+2025-01-07 04:38:49 [[32minfo[39m]: [32mTime is up for player Player 9 turn! Automatic play for player is Check game state: 1[39m {}
+2025-01-07 04:38:49 [[32minfo[39m]: [32mThe player 9 action: Check[39m {"amount":null}
+2025-01-07 04:38:49 [[34mdebug[39m]: [34mSet waiting time for player Player 10 turn[39m {"seconds":15,"playerId":10}
+2025-01-07 04:39:04 [[32minfo[39m]: [32mTime is up for player Player 10 turn! Automatic play for player is Check game state: 1[39m {}
+2025-01-07 04:39:04 [[32minfo[39m]: [32mThe player 10 action: Check[39m {"amount":null}
+2025-01-07 04:39:04 [[34mdebug[39m]: [34mSet waiting time for player Player 1 turn[39m {"seconds":15,"playerId":1}
+2025-01-07 04:39:19 [[32minfo[39m]: [32mTime is up for player Player 1 turn! Automatic play for player is Check game state: 1[39m {}
+2025-01-07 04:39:19 [[32minfo[39m]: [32mThe player 1 action: Check[39m {"amount":null}
+2025-01-07 04:39:19 [[34mdebug[39m]: [34mSet waiting time for player Player 2 turn[39m {"seconds":15,"playerId":2}
+2025-01-07 04:39:34 [[32minfo[39m]: [32mTime is up for player Player 2 turn! Automatic play for player is Fold game state: 1[39m {}
+2025-01-07 04:39:34 [[32minfo[39m]: [32mThe player 2 action: Fold[39m {"amount":null}
+2025-01-07 04:39:34 [[34mdebug[39m]: [34mGame is on FLOP.[39m {"currentBet":60,"pot":380,"comunityCards":["4d","8s","Kd"]}
+2025-01-07 04:39:34 [[34mdebug[39m]: [34mSet waiting time for player Player 6 turn[39m {"seconds":15,"playerId":6}
+2025-01-07 04:39:49 [[32minfo[39m]: [32mTime is up for player Player 6 turn! Automatic play for player is Check game state: 2[39m {}
+2025-01-07 04:39:49 [[32minfo[39m]: [32mThe player 6 action: Check[39m {"amount":null}
+2025-01-07 04:39:49 [[34mdebug[39m]: [34mSet waiting time for player Player 7 turn[39m {"seconds":15,"playerId":7}
+2025-01-07 04:40:04 [[32minfo[39m]: [32mTime is up for player Player 7 turn! Automatic play for player is Check game state: 3[39m {}
+2025-01-07 04:40:04 [[32minfo[39m]: [32mThe player 7 action: Check[39m {"amount":null}
+2025-01-07 04:40:04 [[34mdebug[39m]: [34mGame is on River. current bet[39m {"currentBet":60,"pot":380,"comunityCards":["4d","8s","Kd","7h","Tc"]}
+2025-01-07 04:40:04 [[34mdebug[39m]: [34mSet waiting time for player Player 9 turn[39m {"seconds":15,"playerId":9}
+2025-01-07 04:40:19 [[32minfo[39m]: [32mTime is up for player Player 9 turn! Automatic play for player is Check game state: 4[39m {}
+2025-01-07 04:40:19 [[32minfo[39m]: [32mThe player 9 action: Check[39m {"amount":null}
+2025-01-07 04:40:19 [[34mdebug[39m]: [34mSet waiting time for player Player 10 turn[39m {"seconds":15,"playerId":10}
+2025-01-07 04:40:34 [[32minfo[39m]: [32mTime is up for player Player 10 turn! Automatic play for player is Hide game state: 5[39m {}
+2025-01-07 04:40:34 [[32minfo[39m]: [32mComunity cards: [39m {}
+2025-01-07 04:40:34 [[32minfo[39m]: [32mWinner(s): [39m {"0":{"player":{"id":6,"name":"Player 6","chips":1320,"hand":[{"suit":"d","rank":7},{"suit":"s","rank":7}],"isFolded":false,"betAmount":60,"seatNumber":6,"showCards":false},"rank":383,"type":4,"value":16767,"name":"three of a kind"}}
+2025-01-07 04:42:50 [[34mdebug[39m]: [34mSet waiting time for player Player 2 turn[39m {"seconds":15,"playerId":2}
+2025-01-07 04:42:55 [[32minfo[39m]: [32mThe player 2 action: Bet[39m {"amount":20}
+2025-01-07 04:42:55 [[34mdebug[39m]: [34mSet waiting time for player Player 3 turn[39m {"seconds":15,"playerId":3}
+2025-01-07 04:43:00 [[32minfo[39m]: [32mThe player 3 action: Call[39m {"amount":null}
+2025-01-07 04:43:00 [[34mdebug[39m]: [34mSet waiting time for player Player 4 turn[39m {"seconds":15,"playerId":4}
+2025-01-07 04:43:05 [[32minfo[39m]: [32mThe player 4 action: Raise[39m {"amount":null}
+2025-01-07 04:43:05 [[34mdebug[39m]: [34mSet waiting time for player Player 5 turn[39m {"seconds":15,"playerId":5}
+2025-01-07 04:43:10 [[32minfo[39m]: [32mThe player 5 action: Fold[39m {"amount":null}
+2025-01-07 04:43:10 [[34mdebug[39m]: [34mSet waiting time for player Player 6 turn[39m {"seconds":15,"playerId":6}
+2025-01-07 04:43:15 [[32minfo[39m]: [32mThe player 6 action: Call[39m {"amount":null}
+2025-01-07 04:43:15 [[34mdebug[39m]: [34mSet waiting time for player Player 7 turn[39m {"seconds":15,"playerId":7}
+2025-01-07 04:43:20 [[32minfo[39m]: [32mThe player 7 action: Call[39m {"amount":null}
+2025-01-07 04:43:20 [[34mdebug[39m]: [34mSet waiting time for player Player 8 turn[39m {"seconds":15,"playerId":8}
+2025-01-07 04:43:25 [[32minfo[39m]: [32mThe player 8 action: Fold[39m {"amount":null}
+2025-01-07 04:43:25 [[34mdebug[39m]: [34mSet waiting time for player Player 9 turn[39m {"seconds":15,"playerId":9}
+2025-01-07 04:43:30 [[32minfo[39m]: [32mThe player 9 action: Call[39m {"amount":null}
+2025-01-07 04:43:30 [[34mdebug[39m]: [34mSet waiting time for player Player 10 turn[39m {"seconds":15,"playerId":10}
+2025-01-07 04:43:35 [[32minfo[39m]: [32mThe player 10 action: Call[39m {"amount":null}
+2025-01-07 04:43:35 [[34mdebug[39m]: [34mSet waiting time for player Player 1 turn[39m {"seconds":15,"playerId":1}
+2025-01-07 04:43:40 [[32minfo[39m]: [32mThe player 1 action: Call[39m {"amount":null}
+2025-01-07 04:43:40 [[34mdebug[39m]: [34mSet waiting time for player Player 2 turn[39m {"seconds":15,"playerId":2}
+2025-01-07 04:43:45 [[32minfo[39m]: [32mThe player 2 action: Check[39m {"amount":null}
+2025-01-07 04:43:45 [[34mdebug[39m]: [34mSet waiting time for player Player 3 turn[39m {"seconds":15,"playerId":3}
+2025-01-07 04:44:00 [[32minfo[39m]: [32mTime is up for player Player 3 turn! Automatic play for player is Fold game state: 1[39m {"playerId":3,"pot":380,"chips":980}
+2025-01-07 04:44:00 [[32minfo[39m]: [32mThe player 3 action: Fold[39m {"amount":null}
+2025-01-07 04:44:00 [[34mdebug[39m]: [34mSet waiting time for player Player 4 turn[39m {"seconds":15,"playerId":4}
+2025-01-07 04:44:15 [[32minfo[39m]: [32mTime is up for player Player 4 turn! Automatic play for player is Fold game state: 1[39m {"playerId":4,"pot":380,"chips":960}
+2025-01-07 04:44:15 [[32minfo[39m]: [32mThe player 4 action: Fold[39m {"amount":null}
+2025-01-07 04:44:15 [[34mdebug[39m]: [34mSet waiting time for player Player 6 turn[39m {"seconds":15,"playerId":6}
+2025-01-07 04:44:30 [[32minfo[39m]: [32mTime is up for player Player 6 turn! Automatic play for player is Check game state: 1[39m {"playerId":6,"pot":380,"chips":940}
+2025-01-07 04:44:30 [[32minfo[39m]: [32mThe player 6 action: Check[39m {"amount":null}
+2025-01-07 04:44:30 [[34mdebug[39m]: [34mSet waiting time for player Player 7 turn[39m {"seconds":15,"playerId":7}
+2025-01-07 04:44:45 [[32minfo[39m]: [32mTime is up for player Player 7 turn! Automatic play for player is Check game state: 1[39m {"playerId":7,"pot":380,"chips":940}
+2025-01-07 04:44:45 [[32minfo[39m]: [32mThe player 7 action: Check[39m {"amount":null}
+2025-01-07 04:44:45 [[34mdebug[39m]: [34mSet waiting time for player Player 9 turn[39m {"seconds":15,"playerId":9}
+2025-01-07 04:45:00 [[32minfo[39m]: [32mTime is up for player Player 9 turn! Automatic play for player is Check game state: 1[39m {"playerId":9,"pot":380,"chips":940}
+2025-01-07 04:45:00 [[32minfo[39m]: [32mThe player 9 action: Check[39m {"amount":null}
+2025-01-07 04:45:00 [[34mdebug[39m]: [34mSet waiting time for player Player 10 turn[39m {"seconds":15,"playerId":10}
+2025-01-07 04:45:15 [[32minfo[39m]: [32mTime is up for player Player 10 turn! Automatic play for player is Check game state: 1[39m {"playerId":10,"pot":380,"chips":940}
+2025-01-07 04:45:15 [[32minfo[39m]: [32mThe player 10 action: Check[39m {"amount":null}
+2025-01-07 04:45:15 [[34mdebug[39m]: [34mSet waiting time for player Player 1 turn[39m {"seconds":15,"playerId":1}
+2025-01-07 04:45:30 [[32minfo[39m]: [32mTime is up for player Player 1 turn! Automatic play for player is Check game state: 1[39m {"playerId":1,"pot":380,"chips":940}
+2025-01-07 04:45:30 [[32minfo[39m]: [32mThe player 1 action: Check[39m {"amount":null}
+2025-01-07 04:45:30 [[34mdebug[39m]: [34mSet waiting time for player Player 2 turn[39m {"seconds":15,"playerId":2}
+2025-01-07 04:45:45 [[32minfo[39m]: [32mTime is up for player Player 2 turn! Automatic play for player is Fold game state: 1[39m {"playerId":2,"pot":380,"chips":980}
+2025-01-07 04:45:45 [[32minfo[39m]: [32mThe player 2 action: Fold[39m {"amount":null}
+2025-01-07 04:45:45 [[34mdebug[39m]: [34mGame is on FLOP.[39m {"currentBet":60,"pot":380,"comunityCards":["Jd","2h","7h"]}
+2025-01-07 04:45:45 [[34mdebug[39m]: [34mSet waiting time for player Player 6 turn[39m {"seconds":15,"playerId":6}
+2025-01-07 04:46:00 [[32minfo[39m]: [32mTime is up for player Player 6 turn! Automatic play for player is Check game state: 2[39m {"playerId":6,"pot":380,"chips":940}
+2025-01-07 04:46:00 [[32minfo[39m]: [32mThe player 6 action: Check[39m {"amount":null}
+2025-01-07 04:46:00 [[34mdebug[39m]: [34mSet waiting time for player Player 7 turn[39m {"seconds":15,"playerId":7}
+2025-01-07 04:46:15 [[32minfo[39m]: [32mTime is up for player Player 7 turn! Automatic play for player is Check game state: 3[39m {"playerId":7,"pot":380,"chips":940}
+2025-01-07 04:46:15 [[32minfo[39m]: [32mThe player 7 action: Check[39m {"amount":null}
+2025-01-07 04:46:15 [[34mdebug[39m]: [34mGame is on River. current bet[39m {"currentBet":60,"pot":380,"comunityCards":["Jd","2h","7h","Kh","4c"]}
+2025-01-07 04:46:15 [[34mdebug[39m]: [34mSet waiting time for player Player 9 turn[39m {"seconds":15,"playerId":9}
+2025-01-07 04:46:30 [[32minfo[39m]: [32mTime is up for player Player 9 turn! Automatic play for player is Check game state: 4[39m {"playerId":9,"pot":380,"chips":940}
+2025-01-07 04:46:30 [[32minfo[39m]: [32mThe player 9 action: Check[39m {"amount":null}
+2025-01-07 04:46:30 [[34mdebug[39m]: [34mSet waiting time for player Player 10 turn[39m {"seconds":15,"playerId":10}
+2025-01-07 04:46:45 [[32minfo[39m]: [32mTime is up for player Player 10 turn! Automatic play for player is Hide game state: 5[39m {"playerId":10,"pot":380,"chips":940}
+2025-01-07 04:46:45 [[32minfo[39m]: [32mComunity cards: [39m {}
+2025-01-07 04:46:45 [[32minfo[39m]: [32mWinner(s): [39m {"0":{"player":{"id":10,"name":"Player 10","chips":1320,"hand":[{"suit":"s","rank":"K"},{"suit":"s","rank":"Q"}],"isFolded":false,"betAmount":60,"seatNumber":10,"showCards":false},"rank":2582,"type":2,"value":10774,"name":"one pair"}}

@@ -80,7 +80,9 @@ export default class Table {
       GAME_EVENTS.PLAYER_ACTION,
       (data: { playerId: string; action: PlayerAction; amount?: number }) => {
         clearTimeout(this.playerTurnTimeout); // Si el jugador actúa, cancelar el timeout
-        logger.info(`The player ${data.playerId} make: ${data.action}`);
+        logger.info(`The player ${data.playerId} action: ${data.action}`, {
+          amount: data?.amount || null,
+        });
 
         // Update history
         this.history.push({
@@ -152,11 +154,12 @@ export default class Table {
         autoPlay = PlayerAction.Fold;
       }
       logger.info(
-        `Time is up for player ${
-          player.name
-        } turn! Automatic play for player is ${autoPlay} game state: ${[
-          this.gameState,
-        ]}`
+        `Time is up for player ${player.name} turn! Automatic play for player is ${autoPlay} game state: ${this.gameState}`,
+        {
+          playerId: player.id,
+          pot: this.pot,
+          chips: player.chips,
+        }
       );
       this.playerAction(player.id, autoPlay);
     });
@@ -229,7 +232,7 @@ export default class Table {
     this.currentPlayerIndex = this.currentSmallBlindIndex;
     // Once game start is 1st player turn
     this.events.emit(GAME_EVENTS.PLAYER_TURN, {
-      playerId: this.players[this.currentPlayerIndex].id,
+      player: this.players[this.currentPlayerIndex],
     });
   }
 
@@ -496,7 +499,7 @@ export default class Table {
       return;
     }
     this.events.emit(GAME_EVENTS.PLAYER_TURN, {
-      playerId: this.players[this.currentPlayerIndex].id,
+      player: this.players[this.currentPlayerIndex],
     });
   }
 

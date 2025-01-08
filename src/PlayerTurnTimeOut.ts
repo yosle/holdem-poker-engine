@@ -3,6 +3,7 @@ import Table from "./Table";
 import { GameState } from "./Table";
 import { GAME_EVENTS } from "./Table";
 import { logger } from "./Utils";
+import Player from "./interfaces/Player";
 class PlayerTurnTimeout {
   private table: Table;
 
@@ -11,12 +12,11 @@ class PlayerTurnTimeout {
     this.table.events.on(GAME_EVENTS.PLAYER_TURN, this.startTimer.bind(this));
   }
 
-  startTimer(data: { playerId: string; action?: string; amount?: number }) {
+  startTimer(data: { player: Player; action?: string; amount?: number }) {
     if (this.table.gameState == GameState.Ended) return;
-    logger.debug(`Set waiting time for player ${data.playerId} turn`, {
+    logger.debug(`Set waiting time for player ${data.player.name} turn`, {
       seconds: this.table.playerTurnTimeLimit,
-      playerId: data.playerId,
-      action: data.action,
+      playerId: data.player.id,
     });
     const timeout = this.table.playerTurnTimeLimit * 1000; // 15 seconds
     this.table.playerTurnTimeout = setTimeout(() => {
