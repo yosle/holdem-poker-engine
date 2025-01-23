@@ -17,33 +17,20 @@ const player9 = new Player(9, 'Player 9', 1000);
 const player10 = new Player(10, 'Player 10', 1000);
 
 
-const table = new Table(1, 10, 100, 200);
+const table = new Table({
+    maxPlayers: 10,
+    playerTurnTimeLimit: 10
+});
 table.seatPlayer(player1);
 table.seatPlayer(player2);
 table.seatPlayer(player3);
 table.seatPlayer(player4);
-table.seatPlayer(player5);
-table.seatPlayer(player6);
-table.seatPlayer(player7);
-table.seatPlayer(player8);
-table.seatPlayer(player9);
-table.seatPlayer(player10);
 
 table.startGame();
 
 const actions = [
+    () => table.playerAction(4, PlayerAction.Raise, 20),    // Player 2 iguala
 
-    () => table.playerAction(2, PlayerAction.Bet, 20),    // Player 2 iguala
-    () => table.playerAction(3, PlayerAction.Call),      // Player 3 iguala
-    () => table.playerAction(4, PlayerAction.Raise, 40), // Player 4 sube a 40
-    () => table.playerAction(5, PlayerAction.Fold),      // Player 5 se retira
-    () => table.playerAction(6, PlayerAction.Call),      // Player 6 iguala
-    () => table.playerAction(7, PlayerAction.Call),      // Player 7 iguala
-    () => table.playerAction(8, PlayerAction.Fold),      // Player 8 se retira
-    () => table.playerAction(9, PlayerAction.Call),      // Player 9 iguala
-    () => table.playerAction(10, PlayerAction.Call),     // Player 10 iguala
-    () => table.playerAction(1, PlayerAction.Call),      // Player 1 iguala
-    () => table.playerAction(2, PlayerAction.Check)      // Player 2 pasa (flop)
 ];
 
 // Función para ejecutar las acciones con un intervalo
@@ -62,7 +49,7 @@ function executeActions(actions, interval) {
 }
 
 // Ejecutar las acciones con un intervalo de 5 segundos (5000 ms)
-executeActions(actions, 5000);
+executeActions(actions, 6000);
 
 // Manejar el evento de fin de juego
 

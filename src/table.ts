@@ -10,7 +10,9 @@ import { evalHand } from "poker-evaluator-ts";
 import PokerEngineEvents from "./PokerEngineEvents";
 import PlayerTurnTimeout from "./PlayerTurnTimeOut";
 import { clearTimeout } from "timers";
-import { logger } from "./Utils";
+import { createLogger } from "./Utils";
+import { nanoid } from "nanoid";
+import { clearScreenDown } from "readline";
 
 export enum GameState {
   WaitingForPlayers,
@@ -46,8 +48,8 @@ export default class Table {
   public communityCards: Card[] = [];
   private currentPlayerIndex: number = 0;
   private currentDealerIndex: number = 0;
-  private currentBigBlindIndex: number = 0;
-  private currentSmallBlindIndex: number = 1;
+  public currentBigBlindIndex: number = 0;
+  public currentSmallBlindIndex: number = 1;
   public minimumBet: number = 5; // Apuesta mínima para cada ronda
   public currentBet: number = 0; // Apuesta actual en la ronda
   public smallBlind: number = 5;
@@ -56,6 +58,8 @@ export default class Table {
   public history: GameLogEntry[] = [];
   public playerTurnTimeout: any;
   public maxPlayers: number;
+  public tableId: string = "N/A";
+  public logger;
 
   constructor(
     options: {
@@ -66,6 +70,8 @@ export default class Table {
       playerTurnTimeLimit?: number;
     } = {}
   ) {
+    this.tableId = nanoid(8);
+    this.logger = createLogger(this.tableId);
     this.events = new PokerEngineEvents();
     this.playerTurnTimeout = new PlayerTurnTimeout(this);
     this.maxPlayers =
@@ -79,8 +85,8 @@ export default class Table {
     this.events.on(
       GAME_EVENTS.PLAYER_ACTION,
       (data: { playerId: string; action: PlayerAction; amount?: number }) => {
-        clearTimeout(this.playerTurnTimeout); // Si el jugador actúa, cancelar el timeout
-        logger.info(`The player ${data.playerId} action: ${data.action}`, {
+        if (this.playerTurnTimeout) clearTimeout(this.playerTurnTimeout); // Si el jugador actúa, cancelar el timeout
+        this.logger.info(`The player ${data.playerId} action: ${data.action}`, {
           amount: data?.amount || null,
         });
 
@@ -123,7 +129,7 @@ export default class Table {
         player.betAmount === 0 &&
         player.id === this.players[this.currentSmallBlindIndex].id
       ) {
-        logger.info(`First turn of small blind. Automatic play`, {
+        this.logger.info(`First turn of small blind. Automatic play`, {
           name: player.name,
           playerId: player.id,
           action: autoPlay,
@@ -139,7 +145,10 @@ export default class Table {
         player.betAmount === 0 &&
         player.id === this.players[this.currentBigBlindIndex].id
       ) {
-        logger.info(
+        if (this.currentBet > this.bigBlind) {
+          autoPlay = PlayerAction.Call;
+        }
+        this.logger.info(
           `First turn for big blind ${
             player.name
           } Automatic play for player is ${autoPlay} game state: ${[
@@ -153,7 +162,7 @@ export default class Table {
       if (player.betAmount < this.currentBet) {
         autoPlay = PlayerAction.Fold;
       }
-      logger.info(
+      this.logger.info(
         `Time is up for player ${player.name} turn! Automatic play for player is ${autoPlay} game state: ${this.gameState}`,
         {
           playerId: player.id,
@@ -209,6 +218,7 @@ export default class Table {
     if (this.players.length < this.maxPlayers) {
       player.seatNumber = seatNumber ?? this.players.length + 1;
       this.players.push(player);
+      this.events.emit(GAME_EVENTS.PLAYER_JOINED, { player });
       return true;
     }
     return false;
@@ -217,27 +227,37 @@ export default class Table {
   // Inicia el juego
   startGame(): void {
     if (this.players.length < 2) {
-      throw new Error("No hay suficientes jugadores para iniciar el juego.");
+      throw new Error("No enough players to start a game");
     }
+
     this.gameState = GameState.PreFlop;
     this.dealInitialCards();
 
     // assign dealer, big blind and small blinds
-    this.currentDealerIndex = 0;
-    // if two players dealer is also the smallBlind
-    this.currentSmallBlindIndex = this.players.length === 2 ? 0 : 1;
-    this.currentBigBlindIndex = this.currentSmallBlindIndex + 1;
+    this.currentDealerIndex = this.currentDealerIndex ?? 0; // if no dealer specified start with position 0
+    this.currentSmallBlindIndex =
+      (this.currentDealerIndex + 1) % this.players.length;
+    this.currentBigBlindIndex =
+      (this.currentSmallBlindIndex + 1) % this.players.length;
 
-    // hand's up game: is Dealer/small blind turn. else is small blind turn
+    // Automatic play of smallblind
     this.currentPlayerIndex = this.currentSmallBlindIndex;
-    // Once game start is 1st player turn
-    this.events.emit(GAME_EVENTS.PLAYER_TURN, {
-      player: this.players[this.currentPlayerIndex],
-    });
+    this.playerAction(
+      this.players[this.currentPlayerIndex].id,
+      PlayerAction.Bet,
+      this.smallBlind
+    );
+    // automatic play of bigblind
+    this.playerAction(
+      this.players[this.currentBigBlindIndex].id,
+      PlayerAction.Bet,
+      this.bigBlind
+    );
   }
 
   // Reparte dos cartas a cada jugador
   private dealInitialCards(): void {
+    clearScreenDown;
     for (let player of this.players) {
       player.hand = [this.deck.pop()!, this.deck.pop()!];
     }
@@ -250,7 +270,7 @@ export default class Table {
         this.gameState = GameState.Flop;
         this.dealCommunityCards(3);
 
-        logger.debug(`Game is on FLOP.`, {
+        this.logger.debug(`Game is on FLOP.`, {
           currentBet: this.currentBet,
           pot: this.pot,
           comunityCards: this.communityCards.map((card) => cardToString(card)),
@@ -281,7 +301,7 @@ export default class Table {
       case GameState.Flop:
         this.gameState = GameState.Turn;
         this.dealCommunityCards(1);
-        console.debug(`Game is on TURN.`, {
+        this.logger.debug(`Game is on TURN.`, {
           currentBet: this.currentBet,
           pot: this.pot,
           comunityCards: this.communityCards.map((card) => cardToString(card)),
@@ -307,7 +327,7 @@ export default class Table {
       case GameState.Turn:
         this.gameState = GameState.River;
         this.dealCommunityCards(1);
-        logger.debug(`Game is on River. current bet`, {
+        this.logger.debug(`Game is on River. current bet`, {
           currentBet: this.currentBet,
           pot: this.pot,
           comunityCards: this.communityCards.map((card) => cardToString(card)),
@@ -337,7 +357,7 @@ export default class Table {
         });
         break;
       case GameState.River:
-        console.debug(`Starting Showdown. current bet: ${this.currentBet}`);
+        this.logger.debug(`Starting Showdown. current bet: ${this.currentBet}`);
         this.gameState = GameState.Showdown;
         this.events.emit(GAME_EVENTS.GAME_STATE_CHANGED, {
           details: {
@@ -363,7 +383,7 @@ export default class Table {
         });
         break;
       case GameState.Showdown:
-        console.debug(`Game Ended`);
+        this.logger.debug(`Game Ended`);
         this.determineWinners();
         this.gameState = GameState.Ended;
         this.history.push({
@@ -450,14 +470,17 @@ export default class Table {
       });
     }
 
-    logger.info(
+    this.logger.info(
       "Comunity cards: ",
-      this.communityCards.map((card) => cardToEmojiString(card)).join(" ")
+      this.communityCards.map((card) => {
+        return cardToEmojiString(card);
+      })
     );
-    console.log("Hand in showdown: ");
+    console.log();
     activePlayers.map((player) =>
-      console.log(
-        "Name: " +
+      this.logger.info(
+        "Hand in showdown: \n" +
+          "Name: " +
           player.name +
           " Hand: " +
           player.hand.map((card) => cardToEmojiString(card)).join(" ")
@@ -473,7 +496,7 @@ export default class Table {
     // reset pot
     this.pot = 0;
 
-    logger.info("Winner(s): ", winners);
+    this.logger.debug("Winner(s): ", winners);
 
     this.events.emit(GAME_EVENTS.GAME_ENDED, {
       winners,
@@ -498,6 +521,7 @@ export default class Table {
       this.nextPlayer();
       return;
     }
+
     this.events.emit(GAME_EVENTS.PLAYER_TURN, {
       player: this.players[this.currentPlayerIndex],
     });
@@ -611,7 +635,6 @@ export default class Table {
         player.betAmount = amount;
         this.pot += amount;
         this.currentBet = amount;
-        console.debug(`Player ${player.name} Bet ${amount}. Pot: ${this.pot}`);
         this.events.emit(GAME_EVENTS.PLAYER_ACTION, {
           playerId,
           action,
@@ -660,8 +683,16 @@ export default class Table {
    */
   private isBettingRoundOver(): boolean {
     // La ronda de apuestas termina si todos los jugadores han igualado la apuesta actual o se han retirado
+    const activePlayers = this.players.filter((player) => !player.isFolded); // Filtramos los jugadores activos
+    // Si solo queda un jugador activo, la ronda de apuestas se considera terminada
+    if (activePlayers.length === 1) {
+      return true;
+    }
     return this.players.every(
-      (player) => player.isFolded || player.betAmount === this.currentBet
+      (player) =>
+        player.isFolded ||
+        (player.id !== this.players[this.currentBigBlindIndex].id &&
+          player.betAmount === this.currentBet)
     );
   }
 
@@ -718,6 +749,6 @@ export default class Table {
   handlePlayerTurnTimeout(playerId: string) {
     // Handle the player turn timeout (e.g., fold the player's hand)
     // ...
-    console.log(`Player ${playerId} timeout event!`);
+    // console.log(`Player ${playerId} timeout event!`);
   }
 }
