@@ -46,8 +46,8 @@ export default class Table {
   public pot: number = 0;
   gameState: GameState = GameState.WaitingForPlayers;
   public communityCards: Card[] = [];
-  private currentPlayerIndex: number = 0;
-  private currentDealerIndex: number = 0;
+  public currentPlayerIndex: number = 0;
+  public currentDealerIndex: number = 0;
   public currentBigBlindIndex: number = 0;
   public currentSmallBlindIndex: number = 1;
   public minimumBet: number = 5; // Apuesta mínima para cada ronda
@@ -68,6 +68,8 @@ export default class Table {
       currentDealerIndex?: number;
       minimunbet?: number;
       playerTurnTimeLimit?: number;
+      smallBlind?: number;
+      bigBlind?: number;
     } = {}
   ) {
     this.tableId = nanoid(8);
@@ -80,6 +82,8 @@ export default class Table {
     this.currentDealerIndex = options.currentDealerIndex ?? 0;
     this.minimumBet = options.minimunbet ?? 5;
     this.playerTurnTimeLimit = options.playerTurnTimeLimit ?? 15;
+    this.smallBlind = options.smallBlind ?? 5;
+    this.bigBlind = options.bigBlind ?? 10;
     this.initializeDeck();
 
     this.events.on(
@@ -245,13 +249,15 @@ export default class Table {
     this.playerAction(
       this.players[this.currentPlayerIndex].id,
       PlayerAction.Bet,
-      this.smallBlind
+      Math.max(this.smallBlind, this.minimumBet)
     );
+
     // automatic play of bigblind
+    const bigBlindAmount = Math.max(this.bigBlind, this.minimumBet * 2);
     this.playerAction(
       this.players[this.currentBigBlindIndex].id,
       PlayerAction.Bet,
-      this.bigBlind
+      bigBlindAmount
     );
   }
 
@@ -476,7 +482,6 @@ export default class Table {
         return cardToEmojiString(card);
       })
     );
-    console.log();
     activePlayers.map((player) =>
       this.logger.info(
         "Hand in showdown: \n" +
@@ -557,7 +562,9 @@ export default class Table {
       case PlayerAction.Fold:
         player.isFolded = true;
         // pasar el turno al proximo jugador
-        console.debug(`Player ${player.name} Folded. Bet: ${player.betAmount}`);
+        this.logger.debug(
+          `Player ${player.name} Folded. Bet: ${player.betAmount}`
+        );
         this.events.emit(GAME_EVENTS.PLAYER_ACTION, { playerId, action });
 
         break;
@@ -583,7 +590,7 @@ export default class Table {
           player.betAmount += raiseAmount;
           this.pot += raiseAmount;
           this.currentBet = this.currentBet + raiseAmount; // Actualiza la apuesta actual
-          console.debug(
+          this.logger.debug(
             `Player ${player.name} raised ${raiseAmount} to ${player.betAmount}.  Pot: ${this.pot}`
           );
         } else {
@@ -642,7 +649,7 @@ export default class Table {
         });
         break;
       case PlayerAction.Check:
-        console.debug(`Player ${player.name} Checked. Pot ${this.pot}`);
+        this.logger.debug(`Player ${player.name} Checked. Pot ${this.pot}`);
         this.events.emit(GAME_EVENTS.PLAYER_ACTION, { playerId, action });
         break;
       case PlayerAction.Hide:
@@ -661,7 +668,7 @@ export default class Table {
 
     const activePlayers = this.players.filter((p) => !p.isFolded);
     if (activePlayers.length === 1) {
-      console.debug(
+      this.logger.debug(
         "Only one player left with bet. Game state changed showdown"
       );
       this.gameState = GameState.Showdown;
@@ -689,10 +696,7 @@ export default class Table {
       return true;
     }
     return this.players.every(
-      (player) =>
-        player.isFolded ||
-        (player.id !== this.players[this.currentBigBlindIndex].id &&
-          player.betAmount === this.currentBet)
+      (player) => player.isFolded || player.betAmount === this.currentBet
     );
   }
 
@@ -749,6 +753,5 @@ export default class Table {
   handlePlayerTurnTimeout(playerId: string) {
     // Handle the player turn timeout (e.g., fold the player's hand)
     // ...
-    // console.log(`Player ${playerId} timeout event!`);
   }
 }
