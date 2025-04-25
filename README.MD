@@ -103,6 +103,50 @@ const gameHistory = game.getHandHistory();
 console.log(gameHistory);
 ```
 
+## Examples
+
+Here are some examples of how to use the APE Poker Engine:
+
+### Example 1: Setting up a table and starting a game
+
+```javascript
+const { Table } = require('holdem-engine');
+const { Player } = require('holdem-engine');
+
+const player1 = new Player(1, 'Player 1', 1000);
+const player2 = new Player(2, 'Player 2', 1000);
+
+const table = new Table({ maxPlayers: 2 });
+table.seatPlayer(player1);
+table.seatPlayer(player2);
+table.startGame();
+
+console.log('Game started!');
+console.log('Player 1 hand:', player1.hand);
+console.log('Player 2 hand:', player2.hand);
+```
+
+### Example 2: Player actions
+
+```javascript
+const { Table } = require('holdem-engine');
+const { Player } = require('holdem-engine');
+const { PlayerAction } = require('holdem-engine');
+
+const player1 = new Player(1, 'Player 1', 1000);
+const player2 = new Player(2, 'Player 2', 1000);
+
+const table = new Table({ maxPlayers: 2 });
+table.seatPlayer(player1);
+table.seatPlayer(player2);
+table.startGame();
+
+table.playerAction(player1.id, PlayerAction.Bet, 10);
+table.playerAction(player2.id, PlayerAction.Call);
+
+console.log('Pot:', table.pot);
+```
+
 ## API Documentation
 
 ### `Table`
