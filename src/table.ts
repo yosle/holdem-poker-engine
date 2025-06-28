@@ -494,7 +494,7 @@ export default class Table {
 
     if (winners.length > 1) {
       const dividedPot = this.pot / winners.length;
-      winners.forEach((winner) => (winner.chips += dividedPot));
+      winners.forEach((winner) => (winner.player.chips += dividedPot));
     } else {
       winners[0].player.chips += this.pot;
     }
