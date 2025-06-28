@@ -1,7 +1,7 @@
-// Ejemplo de uso de la clase Game
-import Game, { GameOptions } from './Game';
-import Player, { PlayerAction } from './interfaces/Player';
-import { nanoid } from 'nanoid';
+// Ejemplo de uso de la clase Game en formato CommonJS
+const Game = require('./dist/Game').default;
+const { PlayerAction } = require('./dist/index'); // Importamos desde el archivo index compilado
+const { nanoid } = require('nanoid');
 
 // Función para crear un nuevo jugador
 function createPlayer(name, chips = 1000) {
@@ -68,6 +68,13 @@ currentHand.events.on('PLAYER_TURN', (data) => {
       });
     }
   }
+});
+
+// Escuchar cuando un jugador está esperando para unirse a la próxima mano
+currentHand.events.on('PLAYER_WAITING', (data) => {
+  console.log(`El jugador ${data.playerName} (${data.playerId}) está esperando para unirse a la próxima mano`);
+  console.log(`Fichas disponibles: ${data.chips}`);
+  console.log(`Esperando desde: ${data.waitingSince}`);
 });
 
 // Escuchar cuando la mano termina

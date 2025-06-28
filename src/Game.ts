@@ -62,6 +62,14 @@ export default class Game {
     if (this.currentHand) {
       // Player will join in the next hand
       this.logger.info(`Player ${player.name} will join in the next hand`);
+      
+      // Emit PLAYER_WAITING event
+      this.currentHand.events.emit(GAME_EVENTS.PLAYER_WAITING, {
+        playerId: player.id,
+        playerName: player.name,
+        waitingSince: new Date(),
+        chips: player.chips
+      });
     }
     
     return true;
