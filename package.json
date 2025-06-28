@@ -1,6 +1,6 @@
 {
   "name": "holdem-engine",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A TypeScript-based poker engine that supports various poker game mechanics and events.",
   "main": "index.js",
   "scripts": {
