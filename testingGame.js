@@ -1,55 +1,116 @@
-const Table = require('./dist/Table').default;
-const Player = require('./dist/Player').default;
-const { PlayerAction } = require('./dist/Player');
-const { GAME_EVENTS } = require('./dist/Table');
+// Ejemplo de uso de la clase Game
+import Game, { GameOptions } from './Game';
+import Player, { PlayerAction } from './interfaces/Player';
+import { nanoid } from 'nanoid';
 
-// Lista de acciones a realizar
-
-const player1 = new Player(1, 'Player 1', 1000);
-const player2 = new Player(2, 'Player 2', 1000);
-const player3 = new Player(3, 'Player 3', 1000);
-const player4 = new Player(4, 'Player 4', 1000);
-const player5 = new Player(5, 'Player 5', 1000);
-const player6 = new Player(6, 'Player 6', 1000);
-const player7 = new Player(7, 'Player 7', 1000);
-const player8 = new Player(8, 'Player 8', 1000);
-const player9 = new Player(9, 'Player 9', 1000);
-const player10 = new Player(10, 'Player 10', 1000);
-
-
-const table = new Table({
-    maxPlayers: 10,
-    playerTurnTimeLimit: 10
-});
-table.seatPlayer(player1);
-table.seatPlayer(player2);
-table.seatPlayer(player3);
-table.seatPlayer(player4);
-
-table.startGame();
-
-const actions = [
-    () => table.playerAction(4, PlayerAction.Raise, 20),    // Player 2 iguala
-
-];
-
-// Función para ejecutar las acciones con un intervalo
-function executeActions(actions, interval) {
-    let currentAction = 0;
-
-    const intervalId = setInterval(() => {
-        if (currentAction < actions.length) {
-            actions[currentAction](); // Ejecutar la acción actual
-            currentAction++;
-        } else {
-            clearInterval(intervalId); // Detener el intervalo cuando todas las acciones hayan terminado
-            console.log('Simulación completada.');
-        }
-    }, interval);
+// Función para crear un nuevo jugador
+function createPlayer(name, chips = 1000) {
+  return {
+    id: nanoid(8),
+    name,
+    chips,
+    hand: [],
+    isFolded: false,
+    betAmount: 0,
+    showCards: false,
+    seat: -1
+  };
 }
 
-// Ejecutar las acciones con un intervalo de 5 segundos (5000 ms)
-executeActions(actions, 6000);
+// Configuración del juego
+const gameOptions = {
+  maxPlayers: 6,
+  smallBlind: 5,
+  bigBlind: 10,
+  startingChips: 1000,
+  playerTurnTimeLimit: 30
+};
 
-// Manejar el evento de fin de juego
+// Crear una instancia del juego
+const pokerGame = new Game(gameOptions);
 
+// Añadir jugadores
+const player1 = createPlayer('Alice');
+const player2 = createPlayer('Bob');
+const player3 = createPlayer('Charlie');
+const player4 = createPlayer('David');
+
+pokerGame.addPlayer(player1);
+pokerGame.addPlayer(player2);
+pokerGame.addPlayer(player3);
+pokerGame.addPlayer(player4);
+
+console.log(`Jugadores en la mesa: ${pokerGame.getPlayers().length}`);
+
+// Iniciar la primera mano
+let currentHand = pokerGame.startNewHand();
+
+// Configurar escuchas de eventos para la mano actual
+currentHand.events.on('PLAYER_TURN', (data) => {
+  console.log(`Es el turno de ${data.playerId}`);
+  
+  // Simulación de acción del jugador
+  // En un caso real, esto vendría de la interfaz de usuario o de una IA
+  const player = currentHand.players.find(p => p.id === data.playerId);
+  if (player) {
+    // Ejemplo: el jugador hace call o check dependiendo de la situación
+    if (currentHand.currentBet > player.betAmount) {
+      // Hay una apuesta que igualar
+      currentHand.events.emit('PLAYER_ACTION', {
+        playerId: data.playerId,
+        action: PlayerAction.Call
+      });
+    } else {
+      // No hay apuesta que igualar
+      currentHand.events.emit('PLAYER_ACTION', {
+        playerId: data.playerId,
+        action: PlayerAction.Check
+      });
+    }
+  }
+});
+
+// Escuchar cuando la mano termina
+currentHand.events.on('GAME_ENDED', () => {
+  console.log('La mano ha terminado');
+  console.log('Estado de los jugadores:');
+  
+  pokerGame.getPlayers().forEach(player => {
+    console.log(`${player.name}: ${player.chips} fichas`);
+  });
+  
+  // Iniciar una nueva mano después de un tiempo
+  setTimeout(() => {
+    if (pokerGame.getPlayers().length >= 2) {
+      console.log('\nIniciando nueva mano...');
+      currentHand = pokerGame.startNewHand();
+      // Aquí se configurarían nuevamente los escuchas de eventos para la nueva mano
+    } else {
+      console.log('No hay suficientes jugadores para una nueva mano');
+    }
+  }, 3000);
+});
+
+// Simulación de un jugador que abandona después de algunas manos
+setTimeout(() => {
+  console.log(`\n${player3.name} abandona la partida`);
+  pokerGame.removePlayer(player3.id);
+}, 10000);
+
+// Obtener estadísticas del juego después de un tiempo
+setTimeout(() => {
+  console.log('\nEstadísticas del juego:');
+  console.log(`Total de manos jugadas: ${pokerGame.getHandCount()}`);
+  console.log(`Jugadores restantes: ${pokerGame.getPlayers().length}`);
+  
+  // Finalizar el juego actual si existe
+  const currentHandInstance = pokerGame.getCurrentHand();
+  if (currentHandInstance) {
+    pokerGame.endCurrentHand();
+    console.log('Mano actual finalizada');
+  }
+  
+  // Mostrar historial de manos
+  const history = pokerGame.getHandHistory();
+  console.log(`Entradas en el historial: ${history.length}`);
+}, 20000);
